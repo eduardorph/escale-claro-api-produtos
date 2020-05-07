@@ -18,13 +18,13 @@ function load_jquery() {
         wp_enqueue_script( 'jquery' );
     }
 
-    wp_register_style( 'escale_api', plugins_url('/style.css', __FILE__), false, '1.0.1', 'all');
+    wp_register_style( 'escale_api', plugins_url('/style.css', __FILE__), false, '1.0.3', 'all');
     wp_enqueue_style( 'escale_api' );
 
     wp_register_script( 'escale_api_mask', plugins_url('/lib/mask/jquery.mask.min.js',__FILE__ ), false, '1.0.0', 'all');
     wp_enqueue_script('escale_api_mask');
 
-    wp_register_script( 'escale_api', plugins_url('/escale_api.js',__FILE__ ), false, '1.0.11', 'all');
+    wp_register_script( 'escale_api', plugins_url('/escale_api.js',__FILE__ ), false, '1.0.18', 'all');
     wp_enqueue_script('escale_api');
 
     wp_localize_script('escale_api', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php'), 'outro_valor' => 1234));

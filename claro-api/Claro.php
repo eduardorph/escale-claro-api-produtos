@@ -3,8 +3,8 @@ add_action('wp_ajax_escale_claro_api', 'escale_claro_api');
 add_action('wp_ajax_nopriv_escale_claro_api', 'escale_claro_api');
 function escale_claro_api(){
 
-	$zipCode = isset($_POST['cep']) ? $_POST['cep'] : false;
-	$number = isset($_POST['numero']) ? $_POST['numero'] : false;
+	$zipCode = isset($_POST['cep']) ? $_POST['cep'] : null;
+	$number = isset($_POST['numero']) ? $_POST['numero'] : null;
 	$company = isset($_POST['company']) ? $_POST['company'] : "net";
 	$offshoot = isset($_POST['offshoot']) ? $_POST['offshoot'] : "residencial";
 

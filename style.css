@@ -39,7 +39,7 @@
 .escale-api-modal-fechar{
 	cursor: pointer;
 	text-decoration: none;
-	background-color: #650199;
+	background-color: #da291c;
 	padding: 5px 8px;
 	border-radius: 50px;
 }
@@ -61,7 +61,7 @@
 
 .escale-api-modal-box-escolha-titulo {
     font-size: 23px;
-    color: #650199;
+    color: #da291c;
     margin-bottom: 15px;
     text-align: center;
 }
@@ -76,7 +76,7 @@
 
 .escale-api-modal-box-link {
     margin: 10px auto 10px;
-    background-color: #650199;
+    background-color: #da291c;
     padding: 20px 30px;
     border-radius: 25px;
     display: inline-block;
@@ -145,7 +145,7 @@
 
 .escale-api-form-div .escale-api-form-btn{
 	width: 100%;
-    background-color: #650199;
+    background-color: #da291c;
     border-radius: 10px;
     text-decoration: none !important;
     text-transform: uppercase;
@@ -156,6 +156,6 @@
 }
 
 .escale-api-form-div .escale-api-form-btn:hover{
-	background-color:  #3f0060;
+	background-color:  #b11b10;
 	color: #fff;
 }
