@@ -1,0 +1,161 @@
+/*MODAIS*/
+
+.escale-api-modal{
+	position: fixed;
+	z-index: 1000001;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background-color: rgba(0,0,0,.8);
+}
+
+.hide{
+	display: none;
+}
+
+.escale-api-modal-wrapper{
+	background: #fff;
+	border: 10px;
+	position: relative;
+	width: 100%;
+	max-width: 450px;
+	border-radius: 10px;
+	padding: 15px 5px;
+	margin: 0 10px;
+}
+
+.escale-api-modal-header{
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom:10px;
+}
+
+.escale-api-modal-fechar{
+	cursor: pointer;
+	text-decoration: none;
+	background-color: #650199;
+	padding: 5px 8px;
+	border-radius: 50px;
+}
+
+.escale-api-modal-fechar-texto {
+    color: #fff;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.escale-api-modal-box{
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+}
+
+.escale-api-modal-box-escolha-titulo {
+    font-size: 23px;
+    color: #650199;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.escale-api-modal-box-block{
+	width: 95%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+}
+
+.escale-api-modal-box-link {
+    margin: 10px auto 10px;
+    background-color: #650199;
+    padding: 20px 30px;
+    border-radius: 25px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 25px;
+    color: #fff;
+    line-height: 20px;
+    cursor: pointer;
+    background-size: 50px;
+    background-position: 20px;
+    background-repeat: no-repeat;
+}
+
+.escale-api-modal-box-link:hover{
+	background-color: #3f0060;
+}
+
+.escale-api-modal-box-link-text-call{
+	font-weight: normal;
+	font-size: 15px;
+	display:block;
+}
+
+#escale-api-modal-box-telefone a {
+    background-image: url("images/phone.svg");
+}
+
+#escale-api-modal-box-me-ligue a{
+	background-image: url("images/phone_cb.svg");
+}
+
+#escale-api-modal-box-sac a{
+	background-image: url("images/headset.svg");
+}
+
+
+@media (max-width: 410px) 
+{
+	.escale-api-modal-box-link{
+		background-size: 35px;
+		background-position: 15px;
+		font-size: 20px;
+	}
+}
+
+
+/*FORM*/
+
+.escale-api-form{
+	width: 95%;
+}
+
+.escale-api-form-div .escale-api-form-input{
+	width: 100%;
+	border-radius: 10px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	color: #000;
+	margin-bottom:15px;
+	padding: 15px 10px;
+}
+
+
+.escale-api-form-div .escale-api-form-btn{
+	width: 100%;
+    background-color: #650199;
+    border-radius: 10px;
+    text-decoration: none !important;
+    text-transform: uppercase;
+    font-size: 18px;
+    line-height: 22px;
+    padding: 20px 0px;
+    color: #fff;
+}
+
+.escale-api-form-div .escale-api-form-btn:hover{
+	background-color:  #3f0060;
+	color: #fff;
+}

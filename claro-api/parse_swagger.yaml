@@ -1,0 +1,331 @@
+swagger: '2.0'
+
+info:
+  description: MIND e-commerce API
+  title: MIND API
+  version: '2.0'
+
+  contact:
+    name: MIND Team
+    email: moacir.pavoni@claro.com.br
+
+host: api.amxrest.net
+basePath: /v2
+
+schemes:
+  - https
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+tags:
+- name: products
+  description: product list #TODO: Descrição correta
+
+
+paths:
+
+  /parse:
+    get:
+      tags:
+      - products
+
+      summary: get json with products
+      operationId: parseRead
+      description: |
+        lorem ipsum
+
+      parameters:
+
+      - in: query
+        name: zipCode
+        type: string
+        required: false
+        description: search products by zip code
+
+      - in: query
+        name: number
+        type: integer
+        required: false
+        description: RTDM uses this parameter to know the wiring status
+
+      - in: query
+        name: city
+        type: string
+        required: false
+        description: search products by city
+
+      - in: query
+        name: company
+        type: string
+        required: false
+        description: offer products for claro or net
+
+      - in: query
+        name: offshoot
+        type: string
+        required: false
+        description: offer products for business type. residencial or empresarial
+
+      - in: query
+        name: forceCompany
+        type: boolean
+        required: false
+        description: search json by company (company is a required parameter if this is used)
+
+      - in: query
+        name: channel
+        type: string
+        required: false
+        description: desktop or mobile
+
+      - in: query
+        name: format
+        type: string
+        required: false
+        description: response format. Default is json, other option is jsonp
+
+      - in: query
+        name: callback
+        type: string
+        required: false
+        description: callback function if jsonp is choised in format
+
+      - in: query
+        name: info
+        type: string
+        required: false
+        description: verbose mode on json response (dataFile, solr, query)
+
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/StatusTwoOO'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/ErrorFourOFour'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/ErrorDefault'
+
+
+definitions:
+
+  # Errors and statuses
+  ErrorDefault:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        default: 500
+        example: 500
+        description: HTTP Status code
+
+      error:
+        type: object
+        properties:
+          code:
+            type: string
+            default: 500-001
+            example: 500-001
+            description: App specific status code
+
+          message:
+            type: string
+            example: Internal server error
+            description: App specific status message
+
+  StatusTwoOO:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        default: 200
+        example: 200
+        description: HTTP Status code
+
+      meta:
+        properties:
+          code:
+            type: string
+            default: 200-001
+            example: 200-001
+            description: App specific status code
+
+          message:
+            type: string
+            example: OK
+            description: App specific status message
+
+      data:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int32
+            example: 123
+            description: ID of the requested item
+
+  StatusTwoOOne:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        default: 201
+        example: 201
+        description: HTTP Status code
+
+      meta:
+        properties:
+          code:
+            type: string
+            default: 201-001
+            example: 201-001
+            description: App specific status code
+
+          message:
+            type: string
+            example: Item created
+            description: App specific status message
+
+      data:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int32
+            example: 123
+            description: ID of the newly created item
+
+  ErrorFourOO:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        default: 400
+        example: 400
+        description: HTTP Status code
+
+      error:
+        type: object
+        properties:
+          code:
+            type: string
+            default: 400-001
+            example: 400-001
+            description: App specific status code
+
+          message:
+            type: string
+            example: Malformed parameters object
+            description: App specific status message
+
+  ErrorFourOFour:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        default: 404
+        example: 404
+        description: HTTP Status code
+
+      error:
+        type: object
+        properties:
+          code:
+            type: string
+            default: 404-001
+            example: 404-001
+            description: App specific status code
+
+          message:
+            type: string
+            example: Not found
+            description: App specific status message
+
+  ErrorFourONine:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        default: 409
+        example: 409
+        description: HTTP Status code
+
+      error:
+        type: object
+        properties:
+          code:
+            type: string
+            default: 409-001
+            example: 409-001
+            description: App specific status code
+
+          message:
+            type: string
+            example: Item already exists in collection
+            description: App specific status message
+
+  ErrorFourOThree:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        default: 403
+        example: 403
+        description: HTTP Status code
+
+      error:
+        type: object
+        properties:
+          code:
+            type: string
+            default: 403-001
+            example: 403-001
+            description: App specific status code
+
+          message:
+            type: string
+            example: Authentication information is missing or invalid
+            description: App specific status message
+
+  disabledDate:
+    type: string
+    example: '2019,07,30'
+
+  disabledDates:
+    type: array
+    items:
+      $ref: '#/definitions/disabledDate'
+
+  responseSchedule:
+    type: object
+    properties:
+      firstDate:
+        type: string
+        description: Initial date
+        example: '2019,07,24'
+      lastDate:
+        type: string
+        description: Final date
+        example: '2019,07,30'
+      disabled:
+        $ref: '#/definitions/disabledDates'
+
+securityDefinitions:
+   APIKeyHeader:
+     type: apiKey
+     in: header
+     name: x-api-key
