@@ -25,8 +25,81 @@ jQuery(function($) {
 	}
 
 
+	function tabela_tv(){
+		
+		var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
+		var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
+
+		var cep = sessionStorage.getItem('cliente_cep');
+		var numero = sessionStorage.getItem('cliente_numero');
+
+		var link_slug = "";
+
+
+		var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
+		var data_parsed = JSON.parse(escale_valores_api_produtos);
+		var tvs = data_parsed.produtos.tv;
+
+		var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
+		
+
+		var tabela = $(".table.table-bordered.display-desktop");
+
+		var thead = tabela.find("thead");
+		var theadTr = thead.find("tr");
+		var theadTrThTitulo = theadTr.find("th").first().text();
+
+
+		var tbody = tabela.find("tbody");
+		var tbodyTr = tbody.find("tr");
+		var tbodyTd = tbodyTr.find("td").remove();
+		tbodyTr[2].remove();
+		tbodyTr[3].remove();
+
+
+
+
+		var thead_tr = '<tr><th scope="col">'+theadTrThTitulo+'</th>';
+		
+		var tbody_td_0 = '';
+		var tbody_td_1 = '';
+		var tbody_td_2 = '';
+		var tbody_td_3 = '';
+
+
+		for (var i = 0; i < tvs.length; i++) {
+
+			thead_tr += '<th scope="col">'+tvs[i].nome+'</th>';
+
+
+			tbody_td_0 += '<td><span class="text-default">+ de '+tvs[i].qtd_canais+' canais</span></td> ';
+
+			tbody_td_1 += '<td><span class="image-desk"><div class="image-desk-flex">';
+			for (var d = 0; d < tvs[i].canais_principais.length; d++) {
+				tbody_td_1 += '<img style="width: 50px; margin: 2px 5px;" class="lazy" src="'+tvs[i].canais_principais[d]+'" />';
+			}
+			tbody_td_1 += '</div></span></td>';
+
+			tbody_td_2 += '<td><span class="text-default">R$ '+virgula_precos(tvs[i].preco_por)[0]+','+virgula_precos(tvs[i].preco_por)[1]+'</span></td>';
+			
+			// tbody_td_3 += '<td><div class="text-default combo-disclaimer">No combo por</div><div class="price">69,99</div><a href="'+link+'&tvId='+tvs[i].id+'" target="" class="btn small"> Solicitar agora</a><br><div class="link promo"><a href="https://netcombomulti.net/net-tv/'+link_slug+'">Ver detalhes e promoções</a></div></td>';
+			tbody_td_3 += '<td><div class="text-default combo-disclaimer">No combo por</div><div class="price">69,99</div><a href="'+link+'&tvId='+tvs[i].id+'" target="" class="btn small"> Solicitar agora</a></div></td>';
+		}
+
+
+		thead.empty();
+		thead.append(thead_tr);
+
+		// tbody.append(tbody_tr);
+		tbodyTr.eq( 0 ).append(tbody_td_0);
+		tbodyTr.eq( 1 ).append(tbody_td_1);
+		tbodyTr.eq( 4 ).append(tbody_td_2);
+		tbodyTr.eq( 5 ).append(tbody_td_3);
+	}
+
+
 	function tabela_combos_tv_internet(){
-		var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'Oferta_combomulti_escale';
+		var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
 		var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
 
 		var cep = sessionStorage.getItem('cliente_cep');
@@ -108,6 +181,7 @@ jQuery(function($) {
 	        	sessionStorage.removeItem('cliente_numero');
 	        	sessionStorage.setItem('cliente_numero', numero);
 
+	        	tabela_tv();
 	        	tabela_combos_tv_internet();
 	     	}, 
 	     	error: function(data){
@@ -127,6 +201,7 @@ jQuery(function($) {
 		get_api(20950091, 859);
 	}else{
 		console.log("B");
+		tabela_tv();
 		tabela_combos_tv_internet();
 	}
 
