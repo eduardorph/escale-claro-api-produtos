@@ -7,6 +7,8 @@ defined( 'ABSPATH' ) or die();
 * Author: Eduardo - Proteína Digital
 */
 require dirname(__FILE__).'/lib/curl-php/Curl.php';
+require dirname(__FILE__).'/modulos/functions.php';
+require dirname(__FILE__).'/modulos/settings.php';
 require dirname(__FILE__).'/claro-api/Claro.php';
 
 // ESTILOS

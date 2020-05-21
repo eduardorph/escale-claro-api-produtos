@@ -10,6 +10,16 @@ function escale_claro_api(){
 	$offshoot = isset($_POST['offshoot']) ? $_POST['offshoot'] : "residencial";
 
 
+	$tvs_admin = get_option('escale_api_produtos_plugin_options_tv') !== null ? preg_replace('/\s*,\s*/', ',', strtoupper(get_option('escale_api_produtos_plugin_options_tv'))) : false;
+	$internet_admin = get_option('escale_api_produtos_plugin_options_internet') !== null ? preg_replace('/\s*,\s*/', ',', strtoupper(get_option('escale_api_produtos_plugin_options_internet'))) : false;
+	$internet_combo_admin = get_option('escale_api_produtos_plugin_options_combos') !== null ? preg_replace('/\s*,\s*/', ',', strtoupper(get_option('escale_api_produtos_plugin_options_combos'))) : false;
+
+
+	if (!$internet_combo_admin) {
+		die();
+	}
+
+
 	$curl = new Curl;
 
 	$headers = array(
@@ -50,12 +60,8 @@ function escale_claro_api(){
 	$selecoes = $json["selecoes"];
 	$canais = $json["canais"];
 
-
-	$array_internet_combos = array(
-		"35 MEGA",
-		"120 MEGA",
-		"240 MEGA",
-	);
+	
+	$array_internet_combos = explode(",", $internet_combo_admin);
 
 
 	// TVS
