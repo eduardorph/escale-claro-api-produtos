@@ -1,6 +1,6 @@
 jQuery(function($) {
 
-	console.log("v9");
+	console.log("v10");
 
 	//FUNÇÃO PARA PEGAR PARAMETROS NA URL
 	function _GETURL(variavel)
@@ -165,6 +165,7 @@ jQuery(function($) {
 	function tabela_internet(){
 
 		var tabela = $(".table-single-internet-component").find(".table.table-bordered.display-desktop");
+		var tabela_mobile = $(".table-single-internet-component").find("div.display-mobile").find('.wrapper');
 
 		if(tabela.length > 0){
 		
@@ -182,6 +183,17 @@ jQuery(function($) {
 			var internets = data_parsed.produtos.internet;
 
 			var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
+
+
+
+			/* MOBILE */
+
+			var tabLinks = tabela_mobile.find(".tabLinks");
+			var tabLinks_itens = tabLinks.children('li');
+			var tabs_tv = tabela_mobile.find('.tabs.inline');
+			var content_internets = tabs_tv.find(".content");
+
+			/* FIM MOBILE */
 			
 
 			var thead = tabela.find("thead");
@@ -205,6 +217,19 @@ jQuery(function($) {
 			var tbody_td_4 = '';
 
 
+			var mobile_item = '';
+
+
+			if(tabLinks.children('li').length > internets.length){
+				var total_internets = tabLinks.children('li').length - internets.length;
+
+				for (var i = 1; i <= total_internets; i++) {
+					tabLinks_itens.last().remove();
+					content_internets.last().remove();
+				}
+			}
+
+
 			for (var i = 0; i < internets.length; i++) {
 
 				thead_tr += '<th scope="col">'+internets[i].nome+'</th>';
@@ -216,6 +241,28 @@ jQuery(function($) {
 				tbody_td_3 += '<td><span class="text-default">R$ '+virgula_precos(internets[i].preco_por)[0]+','+virgula_precos(internets[i].preco_por)[1]+'</span></td>';
 				
 				tbody_td_4 += '<td><div class="text-default combo-disclaimer">No combo por</div><div class="price">'+virgula_precos(internets[i].preco_combo)[0]+','+virgula_precos(internets[i].preco_combo)[1]+'</div><a href="'+link+'&internetId='+internets[i].id+'" target="" class="btn small"> Solicitar agora</a></div></td>';
+
+
+				/* mobile */
+					if(tabLinks_itens.length -1 >= i){
+						tabLinks_itens.eq( i ).text(internets[i].nome);
+					}else{
+						mobile_item += '<li class="item">'+internets[i].nome+'</li>';
+					}
+
+
+					if(content_internets.length -1 >= i){
+						content_internets.eq(i).find("ul.products").empty().append('<li class="product text-default">'+internets[i].velocidade_download+' de download</li> <li class="product text-default">'+internets[i].velocidade_upload+' de upload</li> <li class="product text-default">Wi-fi: '+internets[i].tem_wifi+'</li>');
+
+						content_internets.eq(i).find(".block-price .item.individual").find("div").last().html('R$ '+virgula_precos(internets[i].preco_por)[0]+','+virgula_precos(internets[i].preco_por)[1]+' /mês')
+						content_internets.eq(i).find(".block-price .item.pack").find("div").last().html('R$ '+virgula_precos(internets[i].preco_combo)[0]+','+virgula_precos(internets[i].preco_combo)[1]+' /mês')
+
+						content_internets.eq(i).find(".subscribe .item.button-block").find("a").attr('href', link+'&internetId='+internets[i].id);
+
+						content_internets.eq(i).find(".subscribe .item.link.small").empty();
+
+					}
+				/* fim mobile */
 			}
 
 
@@ -228,6 +275,8 @@ jQuery(function($) {
 			tbodyTr.eq( 2 ).append(tbody_td_2);
 			tbodyTr.eq( 3 ).append(tbody_td_3);
 			tbodyTr.eq( 4 ).append(tbody_td_4);
+
+			tabLinks.append(mobile_item);	
 		}
 	}
 
