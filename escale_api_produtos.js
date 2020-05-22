@@ -1,6 +1,6 @@
 jQuery(function($) {
 
-	console.log("v3");
+	console.log("v9");
 
 	//FUNÇÃO PARA PEGAR PARAMETROS NA URL
 	function _GETURL(variavel)
@@ -28,6 +28,9 @@ jQuery(function($) {
 	function tabela_tv(){
 
 		var tabela = $(".table-single-component").find(".table.table-bordered.display-desktop");
+		var tabela_mobile = $(".table-single-component").find("div.display-mobile").find('.wrapper');
+		// var tabela_mobile = jQuery(".table-single-component").find("div.display-mobile").find('.wrapper');
+
 
 		if(tabela.length > 0){
 		
@@ -45,7 +48,16 @@ jQuery(function($) {
 			var tvs = data_parsed.produtos.tv;
 
 			var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
-			
+
+			/* MOBILE */
+
+			var tabTvLinks = tabela_mobile.find(".tabTvLinks");
+			var tabTvLinks_itens = tabTvLinks.children('li');
+			var tabs_tv = tabela_mobile.find('.tabs-tv');
+			var content_tvs = tabs_tv.find(".content");
+
+			/* FIM MOBILE */
+						
 
 			var thead = tabela.find("thead");
 			var theadTr = thead.find("tr");
@@ -69,6 +81,20 @@ jQuery(function($) {
 			var tbody_td_3 = '';
 
 
+			var mobile_item = '';
+			var mobile_channels = '';
+
+
+			if(tabTvLinks.children('li').length > tvs.length){
+				var total_tvs = tabTvLinks.children('li').length - tvs.length;
+
+				for (var i = 1; i <= total_tvs; i++) {
+					tabTvLinks_itens.last().remove();
+					content_tvs.last().remove();
+				}
+
+			}
+
 			for (var i = 0; i < tvs.length; i++) {
 
 				thead_tr += '<th scope="col">'+tvs[i].nome+'</th>';
@@ -86,6 +112,38 @@ jQuery(function($) {
 				
 				// tbody_td_3 += '<td><div class="text-default combo-disclaimer">No combo por</div><div class="price">'+virgula_precos(tvs[i].preco_combo)[0]+','+virgula_precos(tvs[i].preco_combo)[1]+'</div><a href="'+link+'&tvId='+tvs[i].id+'" target="" class="btn small"> Solicitar agora</a><br><div class="link promo"><a href="https://netcombomulti.net/net-tv/'+link_slug+'">Ver detalhes e promoções</a></div></td>';
 				tbody_td_3 += '<td><div class="text-default combo-disclaimer">No combo por</div><div class="price">'+virgula_precos(tvs[i].preco_combo)[0]+','+virgula_precos(tvs[i].preco_combo)[1]+'</div><a href="'+link+'&tvId='+tvs[i].id+'" target="" class="btn small"> Solicitar agora</a></div></td>';
+
+
+
+				/* mobile */
+					if(tabTvLinks_itens.length -1 >= i){
+						tabTvLinks_itens.eq( i ).text(tvs[i].nome);
+					}else{
+						mobile_item += '<li class="item">'+tvs[i].nome+'</li>';
+					}
+
+
+					if(content_tvs.length -1 >= i){
+						// content_tvs.eq(i).css('background', 'red');
+
+						content_tvs.eq(i).find("ul.products").empty().append('<li class="product text-default">Mais de '+tvs[i].qtd_canais+' canais</li> <li class="product text-default">NOW Online e TV</li>');
+
+						mobile_channels += '<div class="image-desk-flex">';
+						for (var d = 0; d < tvs[i].canais_principais.length; d++) {
+							mobile_channels += '<img style="width: 50px; margin: 2px 5px;" class="lazy" src="'+tvs[i].canais_principais[d]+'" />';
+						}
+						mobile_channels += '</div>';
+						content_tvs.eq(i).find(".popular-channels .channel-image").empty().append(mobile_channels);
+
+						content_tvs.eq(i).find(".block-price .item.individual").find("span.text-default").html('R$ '+virgula_precos(tvs[i].preco_por)[0]+','+virgula_precos(tvs[i].preco_por)[1]+' por mês')
+						content_tvs.eq(i).find(".block-price .item.pack").find("div").last().html('R$ '+virgula_precos(tvs[i].preco_combo)[0]+','+virgula_precos(tvs[i].preco_combo)[1]+' por mês')
+
+						content_tvs.eq(i).find(".subscribe .item.button-block").find("a").attr('href', link+'&tvId='+tvs[i].id);
+
+						content_tvs.eq(i).find(".subscribe .item.link.small").empty();
+
+					}
+				/* fim mobile */
 			}
 
 
@@ -97,6 +155,9 @@ jQuery(function($) {
 			tbodyTr.eq( 1 ).append(tbody_td_1);
 			tbodyTr.eq( 4 ).append(tbody_td_2);
 			tbodyTr.eq( 5 ).append(tbody_td_3);
+
+
+			tabTvLinks.append(mobile_item);	
 		}
 	}
 
