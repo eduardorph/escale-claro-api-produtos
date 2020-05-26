@@ -192,19 +192,32 @@ function escale_claro_api(){
 
 
 
-	// TELEFONES
+	// FONE
 	foreach ($fones as $fone) {
-		if ($fone["exibir"] == 1 || $fone["exibir"] == true) {
+		if ( $fone["exibir"] == 1 || $fone["exibir"] == true ) {
 
-			$fone["preco_oferta"] = $fone["preco"];
+			$fone["preco_por"] = $fone["preco"];
+			$fone["preco_de"] = $fone["preco"];
+			$fone["preco_combo"] = 0;
 
 			if( isset($fone["ofertaId"]) ){
-				$fone["preco_oferta"] = $ofertas[$fone["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
+				$fone["preco_por"] = $ofertas[$fone["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
 			}
+
+
+			$busca_no_array_fone = busca_no_array($selecoes, '_'.$fone["id"]);
+
+			if( count($busca_no_array_fone) > 0 ){
+				$fone["preco_combo"] = array_values($busca_no_array_fone)[0]["fone"]["preco"];
+			}
+
+			unset($fone["preco"]);
+			unset($fone["precoDe"]);
 
 			$novo_json["produtos"]["fone"][$fone["ordem"]] = $fone;
 		}
 	}
+
 
 	ksort($novo_json["produtos"]["fone"]);
 
@@ -213,36 +226,73 @@ function escale_claro_api(){
 	}
 
 
-	// CELULARES {PÓS | CONTROLE}
+	// CELULARES
 	foreach ($celulares as $celular) {
-		if ($celular["exibir"] == 1 || $celular["exibir"] == true) {
+		if ( $celular["exibir"] == 1 || $celular["exibir"] == true ) {
 
-			$celular["preco_oferta"] = $celular["preco"];
+			$celular["preco_por"] = $celular["preco"];
+			$celular["preco_de"] = $celular["preco"];
+			$celular["preco_combo"] = 0;
 
 			if( isset($celular["ofertaId"]) ){
-				$celular["preco_oferta"] = $ofertas[$celular["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
+				$celular["preco_por"] = $ofertas[$celular["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
 			}
 
-			if (strpos($celular["nome"], 'Controle') !== false) {
-			    $novo_json["produtos"]["celular"]["controles"][$celular["ordem"]] = $celular;
-			}else{
-				$novo_json["produtos"]["celular"]["celulares"][$celular["ordem"]] = $celular;
+
+			$busca_no_array_celular = busca_no_array($selecoes, '_'.$celular["id"]);
+
+			if( count($busca_no_array_celular) > 0 ){
+				$celular["preco_combo"] = array_values($busca_no_array_celular)[0]["celular"]["preco"];
 			}
+
+			unset($celular["preco"]);
+			unset($celular["precoDe"]);
+
+			$novo_json["produtos"]["celular"][$celular["ordem"]] = $celular;
 		}
 	}
 
-	ksort($novo_json["produtos"]["celular"]["controles"]);
 
-	foreach ($novo_json["produtos"]["celular"]["controles"] as $controles){
-		$produtos_array["produtos"]["celular"]["controles"][] = $controles;
+	ksort($novo_json["produtos"]["celular"]);
+
+	foreach ($novo_json["produtos"]["celular"] as $celulares){
+		$produtos_array["produtos"]["celular"][] = $celulares;
 	}
 
-	ksort($novo_json["produtos"]["celular"]["celulares"]);
 
-	foreach ($novo_json["produtos"]["celular"]["celulares"] as $celulares){
-		$produtos_array["produtos"]["celular"]["celulares"][] = $celulares;
-	}
+	// // CELULARES {PÓS | CONTROLE}
+	// foreach ($celulares as $celular) {
+	// 	if ($celular["exibir"] == 1 || $celular["exibir"] == true) {
 
+	// 		$celular["preco_oferta"] = $celular["preco"];
+
+	// 		if( isset($celular["ofertaId"]) ){
+	// 			$celular["preco_oferta"] = $ofertas[$celular["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
+	// 		}
+
+	// 		if (strpos($celular["nome"], 'Controle') !== false) {
+	// 		    $novo_json["produtos"]["celular"]["controles"][$celular["ordem"]] = $celular;
+	// 		}else{
+	// 			$novo_json["produtos"]["celular"]["celulares"][$celular["ordem"]] = $celular;
+	// 		}
+	// 	}
+	// }
+
+	// ksort($novo_json["produtos"]["celular"]["controles"]);
+
+	// foreach ($novo_json["produtos"]["celular"]["controles"] as $controles){
+	// 	$produtos_array["produtos"]["celular"]["controles"][] = $controles;
+	// }
+
+	// ksort($novo_json["produtos"]["celular"]["celulares"]);
+
+	// foreach ($novo_json["produtos"]["celular"]["celulares"] as $celulares){
+	// 	$produtos_array["produtos"]["celular"]["celulares"][] = $celulares;
+	// }
+
+
+	$produtos_array["ofertas"] = $ofertas;
+	$produtos_array["selecoes"] = $selecoes;
 
 
 	echo json_encode($produtos_array);
