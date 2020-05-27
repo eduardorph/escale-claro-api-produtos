@@ -52,9 +52,9 @@ function escale_api_produtos_tvs() { ?>
 
 		foreach($tvs as $tv){
 			if ( in_array(sanitize_title($tv->post_title), $escale_api_produtos_plugin_options_tv) ) {
-				echo '<label style="margin-right: 10px;"><input type="checkbox" checked name="escale_api_produtos_plugin_options_tv[]" value="'.sanitize_title($tv->post_title).'">'.$tv->post_title.'</label>';
+				echo '<label style="margin-right: 10px;"><input type="checkbox" checked name="escale_api_produtos_plugin_options_tv['.$tv->ID.']" value="'.sanitize_title($tv->post_title).'">'.$tv->post_title.'</label>';
 			}else{
-				echo '<label style="margin-right: 10px;"><input type="checkbox" name="escale_api_produtos_plugin_options_tv[]" value="'.sanitize_title($tv->post_title).'">'.$tv->post_title.'</label>';
+				echo '<label style="margin-right: 10px;"><input type="checkbox" name="escale_api_produtos_plugin_options_tv['.$tv->ID.']" value="'.sanitize_title($tv->post_title).'">'.$tv->post_title.'</label>';
 			}
 
 			if($c % 3){
@@ -91,9 +91,9 @@ function escale_api_produtos_internets() { ?>
 
 		foreach($internetes as $internet){
 			if ( in_array(sanitize_title($internet->post_title), $escale_api_produtos_plugin_options_internet) ) {
-				echo '<label style="margin-right: 10px;"><input type="checkbox" checked name="escale_api_produtos_plugin_options_internet[]" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
+				echo '<label style="margin-right: 10px;"><input type="checkbox" checked name="escale_api_produtos_plugin_options_internet['.$internet->ID.']" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
 			}else{
-				echo '<label style="margin-right: 10px;"><input type="checkbox" name="escale_api_produtos_plugin_options_internet[]" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
+				echo '<label style="margin-right: 10px;"><input type="checkbox" name="escale_api_produtos_plugin_options_internet['.$internet->ID.']" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
 			}
 
 			if($c % 3){
@@ -130,9 +130,9 @@ function escale_api_produtos_combos() { ?>
 
 		foreach($internetes as $internet){
 			if ( in_array(sanitize_title($internet->post_title), $escale_api_produtos_plugin_options_combos) ) {
-				echo '<label style="margin-right: 10px;"><input type="checkbox" checked name="escale_api_produtos_plugin_options_combos[]" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
+				echo '<label style="margin-right: 10px;"><input type="checkbox" checked name="escale_api_produtos_plugin_options_combos['.$internet->ID.']" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
 			}else{
-				echo '<label style="margin-right: 10px;"><input type="checkbox" name="escale_api_produtos_plugin_options_combos[]" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
+				echo '<label style="margin-right: 10px;"><input type="checkbox" name="escale_api_produtos_plugin_options_combos['.$internet->ID.']" value="'.sanitize_title($internet->post_title).'">'.$internet->post_title.'</label>';
 			}
 
 			if($c % 3){

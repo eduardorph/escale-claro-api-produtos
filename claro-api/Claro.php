@@ -71,10 +71,17 @@ function escale_claro_api(){
 		if ($tv["exibir"] == 1 || $tv["exibir"] == true) {
 
 			$tv["slug"] = sanitize_title($tv["nome"]);
+			$tv["qtd_canais_hd"] = 0;
+			$tv["ondemand"] = false;
 
 			$tv["tabela"] = false;
 			if ( in_array($tv["slug"], $array_tvs) ) {
 				$tv["tabela"] = true;
+
+				$post_id = array_search($tv["slug"], $array_tvs);
+
+				$tv["qtd_canais_hd"] = get_post_meta($post_id, 'escale_api_canais_hd', true);
+				$tv["ondemand"] = get_post_meta($post_id, 'escale_ondemand', true);
 			}
 
 			$tv["preco_por"] = $tv["preco"];

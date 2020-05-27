@@ -13,7 +13,6 @@ require dirname(__FILE__).'/modulos/functions.php';
 require dirname(__FILE__).'/modulos/settings.php';
 require dirname(__FILE__).'/claro-api/Claro.php';
 
-
 // ESTILOS
 function load_jquery() {
     if ( !wp_script_is( 'jquery', 'enqueued' )) {

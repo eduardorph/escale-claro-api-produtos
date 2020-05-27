@@ -239,8 +239,6 @@ jQuery(function($) {
 				var tbody = tabela.find("tbody");
 				var tbodyTr = tbody.find("tr");
 				var tbodyTd = tbodyTr.find("td").remove();
-				tbodyTr[2].remove();
-				tbodyTr[3].remove();
 
 
 
@@ -249,6 +247,8 @@ jQuery(function($) {
 				
 				var tbody_td_0 = '';
 				var tbody_td_1 = '';
+				var tbody_td_canais_hd = '';
+				var tbody_td_ondemand = '';
 				var tbody_td_2 = '';
 				var tbody_td_3 = '';
 
@@ -280,9 +280,15 @@ jQuery(function($) {
 					}
 					tbody_td_1 += '</div></span></td>';
 
+
+					tbody_td_canais_hd += '<td><span class="text-default">Com '+parseInt(tvs[i].qtd_canais_hd)+' canais HD</span></td>';
+
+
+					tbody_td_ondemand += '<td><span class="text-default">'+tvs[i].ondemand+'</span></td>';
+					
+
 					tbody_td_2 += '<td><span class="text-default">R$ '+virgula_precos(tvs[i].preco_por)[0]+','+virgula_precos(tvs[i].preco_por)[1]+'</span></td>';
 					
-					// tbody_td_3 += '<td><div class="text-default combo-disclaimer">No combo por</div><div class="price">'+virgula_precos(tvs[i].preco_combo)[0]+','+virgula_precos(tvs[i].preco_combo)[1]+'</div><a href="'+link+'&tvId='+tvs[i].id+'" target="" class="btn small"> Solicitar agora</a><br><div class="link promo"><a href="https://netcombomulti.net/net-tv/'+link_slug+'">Ver detalhes e promoções</a></div></td>';
 					tbody_td_3 += '<td><div class="text-default combo-disclaimer">No combo por</div><div class="price">'+virgula_precos(tvs[i].preco_combo)[0]+','+virgula_precos(tvs[i].preco_combo)[1]+'</div><a href="'+link+'&tvId='+tvs[i].id+'" target="" class="btn small"> Solicitar agora</a></div></td>';
 
 
@@ -325,6 +331,8 @@ jQuery(function($) {
 				// tbody.append(tbody_tr);
 				tbodyTr.eq( 0 ).append(tbody_td_0);
 				tbodyTr.eq( 1 ).append(tbody_td_1);
+				tbodyTr.eq( 2 ).append(tbody_td_canais_hd);
+				tbodyTr.eq( 3 ).append(tbody_td_ondemand);
 				tbodyTr.eq( 4 ).append(tbody_td_2);
 				tbodyTr.eq( 5 ).append(tbody_td_3);
 
