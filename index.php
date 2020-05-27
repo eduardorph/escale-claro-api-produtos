@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) or die();
 /*
 * Plugin name: Escale API Produtos
 * Description: Plugin para montar as ofertas da API Claro
-* Version: 2.0
+* Version: 3.0
 * Author: Eduardo - Proteína Digital
 */
 require dirname(__FILE__).'/lib/curl-php/Curl.php';
