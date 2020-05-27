@@ -15,6 +15,17 @@ function escale_claro_api(){
 	$internet_combo_admin = get_option('escale_api_produtos_plugin_options_combos') !== null ? get_option('escale_api_produtos_plugin_options_combos') : array();
 
 
+	$args = array (
+      'post_type'              => array( 'escale_combos_pt' ),
+      'post_status'            => array( 'publish' ),
+      'nopaging'               => true,
+      'order'                  => 'ASC',
+      'orderby'                => 'title',
+    );
+
+  	$combos = get_posts($args);
+
+
 	if (!$internet_combo_admin) {
 		die();
 	}
@@ -296,35 +307,112 @@ function escale_claro_api(){
 	}
 
 
-	// // CELULARES {PÓS | CONTROLE}
-	// foreach ($celulares as $celular) {
-	// 	if ($celular["exibir"] == 1 || $celular["exibir"] == true) {
 
-	// 		$celular["preco_oferta"] = $celular["preco"];
 
-	// 		if( isset($celular["ofertaId"]) ){
-	// 			$celular["preco_oferta"] = $ofertas[$celular["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
-	// 		}
+	// COMBOS
+	foreach ($combos as $combo) {
 
-	// 		if (strpos($celular["nome"], 'Controle') !== false) {
-	// 		    $novo_json["produtos"]["celular"]["controles"][$celular["ordem"]] = $celular;
-	// 		}else{
-	// 			$novo_json["produtos"]["celular"]["celulares"][$celular["ordem"]] = $celular;
-	// 		}
-	// 	}
-	// }
+		$post_id = $combo->ID;
+		$ordem = $combo->ID; // Modificar se precisar
+		$comboTv = get_post_meta($post_id, 'escale_combos_plano_tv', true);
+		$comboInternet = get_post_meta($post_id, 'escale_combos_plano_internet', true);
+		$comboTel = get_post_meta($post_id, 'escale_combos_plano_telefone', true);
+		$comboMovel = get_post_meta($post_id, 'escale_combos_plano_movel', true);
 
-	// ksort($novo_json["produtos"]["celular"]["controles"]);
+		$tvid = "0";
+		$internetid = "_0_";
+		$foneid = "0";
+		$celularid = "";
 
-	// foreach ($novo_json["produtos"]["celular"]["controles"] as $controles){
-	// 	$produtos_array["produtos"]["celular"]["controles"][] = $controles;
-	// }
+		if (isset($comboTv) && !empty($comboTv)) {
+			foreach ($produtos_array["produtos"]["tv"] as $tv) {
+				if( $comboTv == sanitize_title($tv["nome"]) ){
+					$tvid = $tv["id"];
+					$produtos_array["combinacoes"][$ordem]["tv"]["tvId"] = $tv["id"];
+					$produtos_array["combinacoes"][$ordem]["tv"]["nome"] = $tv["nome"];
+					$produtos_array["combinacoes"][$ordem]["tv"]["qtd_canais"] = $tv["qtd_canais"];
+					$produtos_array["combinacoes"][$ordem]["tv"]["canais_principais"] = $tv["canais_principais"];
+				}
+			}
+		}
 
-	// ksort($novo_json["produtos"]["celular"]["celulares"]);
 
-	// foreach ($novo_json["produtos"]["celular"]["celulares"] as $celulares){
-	// 	$produtos_array["produtos"]["celular"]["celulares"][] = $celulares;
-	// }
+		if (isset($comboInternet) && !empty($comboInternet)) {
+			foreach ($produtos_array["produtos"]["internet"] as $internet) {
+				if( $comboInternet == sanitize_title($internet["nome"]) ){
+					$internetid = "_".$internet["id"]."_";
+					$produtos_array["combinacoes"][$ordem]["internet"]["internetId"] = $internet["id"];
+					$produtos_array["combinacoes"][$ordem]["internet"]["nome"] = $internet["nome"];
+				}
+			}
+		}
+
+
+		if (isset($comboTel) && !empty($comboTel)) {
+			foreach ($produtos_array["produtos"]["fone"] as $fone) {
+				if( $comboTel == sanitize_title($fone["nome"]) ){
+					$foneid = $fone["id"];
+					$produtos_array["combinacoes"][$ordem]["fone"]["foneId"] = $fone["id"];
+					$produtos_array["combinacoes"][$ordem]["fone"]["nome"] = $fone["nome"];
+				}
+			}
+		}
+
+
+		if (isset($comboMovel) && !empty($comboMovel)) {
+			foreach ($produtos_array["produtos"]["celular"] as $celular) {
+				if( $comboMovel == sanitize_title($celular["nome"]) ){
+					$celularid = "_".$celular["id"];
+					$produtos_array["combinacoes"][$ordem]["celular"]["celularId"] = $celular["id"];
+					$produtos_array["combinacoes"][$ordem]["celular"]["nome"] = $celular["nome"];
+				}
+			}
+		}
+
+		$selecao_ids = $tvid.$internetid.$foneid.$celularid;
+
+		$valor_combo = 0;
+
+
+		$produtos_array["combinacoes"][$ordem]["combo_id"] = $selecao_ids;
+
+		if ( isset($selecoes[$selecao_ids]) ) {
+			$sel = $selecoes[$selecao_ids];
+			
+			$tv_preco = 0;
+			$tv = isset($sel['tv']) ? $sel['tv'] : 0;
+			if ($tv !== 0) {
+				$tv_preco = isset($tv["ofertaId"]) ? $selecoes[$tv["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $tv["preco"];
+			}
+
+			$internet_preco = 0;
+			$internet = isset($sel['internet']) ? $sel['internet'] : 0;
+			if ($internet !== 0) {
+				$internet_preco = isset($internet["ofertaId"]) ? $selecoes[$internet["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $internet["preco"];
+			}
+
+			$fone_preco = 0;
+			$fone = isset($sel['fone']) ? $sel['fone'] : 0;
+			if ($fone !== 0) {
+				$fone_preco = isset($fone["ofertaId"]) ? $selecoes[$fone["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $fone["preco"];
+			}
+
+			$celular_preco = 0;
+			$celular = isset($sel['celular']) ? $sel['celular'] : 0;
+			if ($celular !== 0) {
+				$celular_preco = isset($celular["ofertaId"]) ? $selecoes[$celular["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $celular["preco"];
+			}
+
+			$valor_combo = $tv_preco + $internet_preco + $fone_preco + $celular_preco;
+
+			$produtos_array["combinacoes"][$ordem]["preco_combo"] = $valor_combo;
+		}else{
+			unset($produtos_array["combinacoes"][$ordem]);
+		}
+
+	}
+
+
 
 
 	$produtos_array["ofertas"] = $ofertas;

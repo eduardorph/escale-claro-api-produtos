@@ -172,18 +172,3 @@ function escale_combos_planos($post){
    
     <?php
 }
-
-
-function produtos_pt($tipo){
-  $args = array (
-      'post_type'              => array( 'escale_produtos_pt' ),
-      'post_status'            => array( 'publish' ),
-      'meta_key'               => 'escale_api_tipo',
-      'meta_value'             => $tipo,
-      'nopaging'               => true,
-      'order'                  => 'ASC',
-      'orderby'                => 'title',
-    );
-
-  return get_posts($args);
-}
