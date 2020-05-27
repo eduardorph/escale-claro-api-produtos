@@ -78,6 +78,11 @@ function escale_api_meta_boxes_combos_save( $post_id )
 		)
 	);
 
+  if( isset( $_POST['plano_destaque'] ) ){
+    $meta_element_class = $_POST['plano_destaque'];
+    update_post_meta( $post_id, 'escale_combos_plano_destaque', wp_kses( $_POST['plano_destaque'], $allowed ) );
+  }
+
 	if( isset( $_POST['plano_tv'] ) ){
 		$meta_element_class = $_POST['plano_tv'];
 		update_post_meta( $post_id, 'escale_combos_plano_tv', wp_kses( $_POST['plano_tv'], $allowed ) );
@@ -88,20 +93,23 @@ function escale_api_meta_boxes_combos_save( $post_id )
     update_post_meta( $post_id, 'escale_combos_plano_internet', wp_kses( $_POST['plano_internet'], $allowed ) );
   }
 
-  if( isset( $_POST['planos_telefone'] ) ){
-    $meta_element_class = $_POST['planos_telefone'];
-    update_post_meta( $post_id, 'escale_combos_plano_telefone', wp_kses( $_POST['planos_telefone'], $allowed ) );
+  if( isset( $_POST['plano_telefone'] ) ){
+    $meta_element_class = $_POST['plano_telefone'];
+    update_post_meta( $post_id, 'escale_combos_plano_telefone', wp_kses( $_POST['plano_telefone'], $allowed ) );
   }
 
-  if( isset( $_POST['planos_movel'] ) ){
-    $meta_element_class = $_POST['planos_movel'];
-    update_post_meta( $post_id, 'escale_combos_plano_movel', wp_kses( $_POST['planos_movel'], $allowed ) );
+  if( isset( $_POST['plano_movel'] ) ){
+    $meta_element_class = $_POST['plano_movel'];
+    update_post_meta( $post_id, 'escale_combos_plano_movel', wp_kses( $_POST['plano_movel'], $allowed ) );
   }
 }
 add_action( 'save_post', 'escale_api_meta_boxes_combos_save' );
 
 
 function escale_combos_planos($post){
+    $plano_destaque = get_post_meta($post->ID, 'escale_combos_plano_destaque', true);
+    $escale_combos_plano_destaque = isset($plano_destaque) && !empty($plano_destaque) ? $plano_destaque : '';
+
     $plano_tv = get_post_meta($post->ID, 'escale_combos_plano_tv', true);
     $escale_combos_plano_tv = isset($plano_tv) && !empty($plano_tv) ? $plano_tv : '';
 
@@ -121,6 +129,15 @@ function escale_combos_planos($post){
 
     wp_nonce_field( 'my_meta_box_nonce', 'meta_box_nonce' );
     ?> 
+
+
+    <p style="margin-bottom: 25px;padding: 10px 10px 10px 5px; border: 2px solid #ccc;">
+      <label><b>Essa combinação é destaque?</b></label><br>
+      <select name="plano_destaque" id="plano_destaque">
+        <option value="false" <?php selected( $escale_combos_plano_destaque, 'false' ); ?>>NÃO</option>
+        <option value="true" <?php selected( $escale_combos_plano_destaque, 'True' ); ?>>SIM</option>
+      </select>
+    </p>
 
     <p>
       <label>Escolha um plano de TV: </label><br>

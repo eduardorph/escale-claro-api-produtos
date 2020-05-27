@@ -20,7 +20,7 @@ function escale_claro_api(){
       'post_status'            => array( 'publish' ),
       'nopaging'               => true,
       'order'                  => 'ASC',
-      'orderby'                => 'title',
+      'orderby'                => 'post_date',
     );
 
   	$combos = get_posts($args);
@@ -307,17 +307,20 @@ function escale_claro_api(){
 	}
 
 
-
+	$ordem = 0;
 
 	// COMBOS
 	foreach ($combos as $combo) {
 
 		$post_id = $combo->ID;
-		$ordem = $combo->ID; // Modificar se precisar
+		$post_name = $combo->post_title;
 		$comboTv = get_post_meta($post_id, 'escale_combos_plano_tv', true);
 		$comboInternet = get_post_meta($post_id, 'escale_combos_plano_internet', true);
 		$comboTel = get_post_meta($post_id, 'escale_combos_plano_telefone', true);
 		$comboMovel = get_post_meta($post_id, 'escale_combos_plano_movel', true);
+		$destaque = get_post_meta($post_id, 'escale_combos_plano_destaque', true);
+
+		$produtos_array["combinacoes"][$ordem]["destaque"] = $destaque;
 
 		$tvid = "0";
 		$internetid = "_0_";
@@ -373,7 +376,7 @@ function escale_claro_api(){
 
 		$valor_combo = 0;
 
-
+		$produtos_array["combinacoes"][$ordem]["nome_combinacao"] = $post_name;
 		$produtos_array["combinacoes"][$ordem]["combo_id"] = $selecao_ids;
 
 		if ( isset($selecoes[$selecao_ids]) ) {
@@ -409,6 +412,8 @@ function escale_claro_api(){
 		}else{
 			unset($produtos_array["combinacoes"][$ordem]);
 		}
+
+		$ordem++;
 
 	}
 

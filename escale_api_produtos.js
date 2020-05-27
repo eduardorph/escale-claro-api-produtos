@@ -2,15 +2,26 @@ jQuery(function($) {
 
 	var $ = jQuery;
 
-	console.log("v11");
+	console.log("v12");
 
-	const simulador_componnent = jQuery("[data-component-name='simulator']");
-	simulador_componnent.append('<div style="display:none;" id="simulator_data"><ul><li id="simulator_data_telefone"></li><li id="simulator_data_internet"></li><li id="simulator_data_tv"></li><li id="simulator_data_celular"></li></ul></div>');
+	// Adiciona uma classe extra no form do CEP
+	jQuery(".CheckAvailability-form").addClass('form_cep_api').removeAttr('data-check-availability-form');
 
+
+	function link_ecommerce(){
+		var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
+		var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
+
+		var cep = sessionStorage.getItem('cliente_cep');
+		var numero = sessionStorage.getItem('cliente_numero');
+
+		var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
+
+		return link;
+	}
 
 	//FUNÇÃO PARA PEGAR PARAMETROS NA URL
-	function _GETURL(variavel)
-	{
+	function _GETURL(variavel){
 		var url   = window.location.search.replace("?", "");
 		var itens = url.split("&");
 		for(n in itens)
@@ -192,10 +203,7 @@ jQuery(function($) {
 	}
 
 
-	// console.log(pega_valores_selecao(167,159,0,2261));
-
-
-	function tabela_tv(){
+	function tabela_tv(link){
 
 		var tabela = $(".table-single-component").find(".table.table-bordered.display-desktop");
 		var tabela_mobile = $(".table-single-component").find("div.display-mobile").find('.wrapper');
@@ -211,15 +219,9 @@ jQuery(function($) {
 
 				var tvs = data_parsed.produtos.tv_tabela;
 			
-				var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
-				var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
-
-				var cep = sessionStorage.getItem('cliente_cep');
-				var numero = sessionStorage.getItem('cliente_numero');
 
 				var link_slug = "";
 
-				var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
 
 				/* MOBILE */
 
@@ -343,7 +345,7 @@ jQuery(function($) {
 	}
 
 
-	function tabela_internet(){
+	function tabela_internet(link){
 
 		var tabela = $(".table-single-internet-component").find(".table.table-bordered.display-desktop");
 		var tabela_mobile = $(".table-single-internet-component").find("div.display-mobile").find('.wrapper');
@@ -355,17 +357,9 @@ jQuery(function($) {
 
 			if( data_parsed.produtos.hasOwnProperty('internet_tabela') ){
 		
-				var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
-				var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
-
-				var cep = sessionStorage.getItem('cliente_cep');
-				var numero = sessionStorage.getItem('cliente_numero');
-
 				var link_slug = "";
 
 				var internets = data_parsed.produtos.internet_tabela;
-
-				var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
 
 
 
@@ -465,7 +459,7 @@ jQuery(function($) {
 	}
 
 
-	function tabela_combos_tv_internet(){
+	function tabela_combos_tv_internet(link){
 
 		var table_multi = $(".table_multi");
 
@@ -480,9 +474,6 @@ jQuery(function($) {
 
 				var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
 				var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
-
-				var cep = sessionStorage.getItem('cliente_cep');
-				var numero = sessionStorage.getItem('cliente_numero');
 				
 
 				var table_multi_side = table_multi.find('.table_multi_side');
@@ -496,9 +487,6 @@ jQuery(function($) {
 				var tv_coluna = '';
 				var internet_titles = '';
 				var table_multi_pricing_vals = '';
-
-
-				var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
 
 				for (var i = 0; i < tvs.length; i++) {
 
@@ -535,277 +523,391 @@ jQuery(function($) {
 	}
 
 
-	function simulador(simulador_componnent){
-		var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
-		var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
+	function simulador(link){
 
-		var cep = sessionStorage.getItem('cliente_cep');
-		var numero = sessionStorage.getItem('cliente_numero');
+		const simulador_componnent = jQuery("[data-component-name='simulator']");
 
-		var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
+		if(simulador_componnent.length > 0){
 
-		var simulator_data_telefone = jQuery("#simulator_data_telefone");
-		var simulator_data_internet = jQuery("#simulator_data_internet");
-		var simulator_data_tv = jQuery("#simulator_data_tv");
-		var simulator_data_celular = jQuery("#simulator_data_celular");
-		var soma_produtos_wrap = jQuery("#soma_produtos_wrap");
+			simulador_componnent.append('<div style="display:none;" id="simulator_data"><ul><li id="simulator_data_telefone"></li><li id="simulator_data_internet"></li><li id="simulator_data_tv"></li><li id="simulator_data_celular"></li></ul></div>');
 
-		var telefone = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(0);
-		var internet = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(1);
-		var tv = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(2);
-		var celular = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(3);
+			var simulator_data_telefone = jQuery("#simulator_data_telefone");
+			var simulator_data_internet = jQuery("#simulator_data_internet");
+			var simulator_data_tv = jQuery("#simulator_data_tv");
+			var simulator_data_celular = jQuery("#simulator_data_celular");
+			var soma_produtos_wrap = jQuery("#soma_produtos_wrap");
 
-		var telefone_select = telefone.find("select");
-		var internet_select = internet.find("select");
-		var tv_select = tv.find("select");
-		var celular_select = celular.find("select");
+			var telefone = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(0);
+			var internet = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(1);
+			var tv = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(2);
+			var celular = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(3);
 
-		var botao = simulador_componnent.find("button.btn");
-		var botao_parent = botao.parent("div.action");
-		botao_parent.empty();
-		botao_parent.append('<a href="#" disabled id="novo_botao_comprar" data-base-link="'+link+'" class="btn disabled">GOSTEI, QUERO ASSINAR</a>');
+			var telefone_select = telefone.find("select");
+			var internet_select = internet.find("select");
+			var tv_select = tv.find("select");
+			var celular_select = celular.find("select");
 
-		var novo_botao = jQuery("#novo_botao_comprar");
+			var botao = simulador_componnent.find("button.btn");
+			var botao_parent = botao.parent("div.action");
+			botao_parent.empty();
+			botao_parent.append('<a href="#" disabled id="novo_botao_comprar" data-base-link="'+link+'" class="btn disabled">GOSTEI, QUERO ASSINAR</a>');
 
-
-		telefone.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
-
-		internet.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
-
-		tv.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
-
-		celular.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
+			var novo_botao = jQuery("#novo_botao_comprar");
 
 
+			telefone.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
 
-		telefone_select.find("option").not(':first').remove();
-		internet_select.find("option").not(':first').remove();
-		tv_select.find("option").not(':first').remove();
-		celular_select.find("option").not(':first').remove();
+			internet.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
 
+			tv.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
 
-		var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
-		var data_parsed = JSON.parse(escale_valores_api_produtos);
-
-		var options_telefone = '';
-		var options_internet = '';
-		var options_tv = '';
-		var options_celular = '';
-
-		for (var i = 0; i < data_parsed.produtos.fone.length; i++) {
-			options_telefone += '<option value="'+data_parsed.produtos.fone[i].id+'-'+data_parsed.produtos.fone[i].preco_por+'-'+data_parsed.produtos.fone[i].preco_combo+'">'+data_parsed.produtos.fone[i].nome+'</option>';
-		}
-
-		for (var i = 0; i < data_parsed.produtos.internet.length; i++) {
-			options_internet += '<option value="'+data_parsed.produtos.internet[i].id+'-'+data_parsed.produtos.internet[i].preco_por+'-'+data_parsed.produtos.internet[i].preco_combo+'">'+data_parsed.produtos.internet[i].nome+'</option>';
-
-		}
-
-		for (var i = 0; i < data_parsed.produtos.tv.length; i++) {
-			options_tv += '<option value="'+data_parsed.produtos.tv[i].id+'-'+data_parsed.produtos.tv[i].preco_por+'-'+data_parsed.produtos.tv[i].preco_combo+'">'+data_parsed.produtos.tv[i].nome+'</option>';
-
-		}
-
-		for (var i = 0; i < data_parsed.produtos.celular.length; i++) {
-			options_celular += '<option value="'+data_parsed.produtos.celular[i].id+'-'+data_parsed.produtos.celular[i].preco_por+'-'+data_parsed.produtos.celular[i].preco_combo+'">'+data_parsed.produtos.celular[i].nome+'</option>';
-		}
-
-		telefone_select.append(options_telefone);
-		internet_select.append(options_internet);
-		tv_select.append(options_tv);
-		celular_select.append(options_celular);
+			celular.find(".individual").find('span.price').find('span').attr('data-preco-individual', "000");
 
 
-		telefone_select.change(function(event) {
-			var soma_produtos = parseInt(soma_produtos_wrap.text());
-			var valor_opt = $(this).val();
-			var simulator_data_telefone_controle = parseInt(simulator_data_telefone.attr('data-controle'));
 
-			var prod_id = false;
-
-			if (valor_opt != "") {
-
-				var tel_val = valor_opt.split("-");
-				var tel_valor = tel_val[0];
-				var tel_preco = tel_val[1];
-				var tel_preco_combo = tel_val[2];
+			telefone_select.find("option").not(':first').remove();
+			internet_select.find("option").not(':first').remove();
+			tv_select.find("option").not(':first').remove();
+			celular_select.find("option").not(':first').remove();
 
 
-				simulator_data_telefone.text(tel_valor);
-				if (parseInt(simulator_data_telefone_controle) < 1) {
-					soma_produtos = soma_produtos + 1;
-					simulator_data_telefone.attr('data-controle', 1);
-				}
+			var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
+			var data_parsed = JSON.parse(escale_valores_api_produtos);
 
-				soma_produtos_wrap.text(soma_produtos);
+			var options_telefone = '';
+			var options_internet = '';
+			var options_tv = '';
+			var options_celular = '';
 
-				var preco_individual = virgula_precos(tel_preco)[0]+','+virgula_precos(tel_preco)[1];
-
-				telefone.find(".individual").find('span.price').find('span').text(preco_individual);
-				telefone.find(".individual").find('span.price').find('span').attr('data-preco-individual', tel_preco);
-
-				prod_id = tel_valor;
-				
-
-			}else{
-				simulator_data_telefone.text("0");
-				if (parseInt(simulator_data_telefone_controle) > 0) {
-					if(parseInt(soma_produtos) > 0){
-						soma_produtos = soma_produtos - 1;
-					}
-					simulator_data_telefone.attr('data-controle', 0);
-				}
-
-				soma_produtos_wrap.text(soma_produtos);
-
-				telefone.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
+			for (var i = 0; i < data_parsed.produtos.fone.length; i++) {
+				options_telefone += '<option value="'+data_parsed.produtos.fone[i].id+'-'+data_parsed.produtos.fone[i].preco_por+'-'+data_parsed.produtos.fone[i].preco_combo+'">'+data_parsed.produtos.fone[i].nome+'</option>';
 			}
 
+			for (var i = 0; i < data_parsed.produtos.internet.length; i++) {
+				options_internet += '<option value="'+data_parsed.produtos.internet[i].id+'-'+data_parsed.produtos.internet[i].preco_por+'-'+data_parsed.produtos.internet[i].preco_combo+'">'+data_parsed.produtos.internet[i].nome+'</option>';
 
-			
+			}
 
-			pega_valores_selecao(telefone, internet, tv, celular);
-		});
+			for (var i = 0; i < data_parsed.produtos.tv.length; i++) {
+				options_tv += '<option value="'+data_parsed.produtos.tv[i].id+'-'+data_parsed.produtos.tv[i].preco_por+'-'+data_parsed.produtos.tv[i].preco_combo+'">'+data_parsed.produtos.tv[i].nome+'</option>';
 
+			}
 
+			for (var i = 0; i < data_parsed.produtos.celular.length; i++) {
+				options_celular += '<option value="'+data_parsed.produtos.celular[i].id+'-'+data_parsed.produtos.celular[i].preco_por+'-'+data_parsed.produtos.celular[i].preco_combo+'">'+data_parsed.produtos.celular[i].nome+'</option>';
+			}
 
-		internet_select.change(function(event) {
-			var soma_produtos = parseInt(soma_produtos_wrap.text());
-			var valor_opt = $(this).val();
-			var simulator_data_internet_controle = parseInt(simulator_data_internet.attr('data-controle'));
-
-			if (valor_opt != "") {
-
-				var net_val = valor_opt.split("-");
-				var net_valor = net_val[0];
-				var net_preco = net_val[1];
-				var net_preco_combo = net_val[2];
+			telefone_select.append(options_telefone);
+			internet_select.append(options_internet);
+			tv_select.append(options_tv);
+			celular_select.append(options_celular);
 
 
-				simulator_data_internet.text(net_valor);
-				if (parseInt(simulator_data_internet_controle) < 1) {
-					soma_produtos = soma_produtos + 1;
-					simulator_data_internet.attr('data-controle', 1);
+			telefone_select.change(function(event) {
+				var soma_produtos = parseInt(soma_produtos_wrap.text());
+				var valor_opt = $(this).val();
+				var simulator_data_telefone_controle = parseInt(simulator_data_telefone.attr('data-controle'));
+
+				var prod_id = false;
+
+				if (valor_opt != "") {
+
+					var tel_val = valor_opt.split("-");
+					var tel_valor = tel_val[0];
+					var tel_preco = tel_val[1];
+					var tel_preco_combo = tel_val[2];
+
+
+					simulator_data_telefone.text(tel_valor);
+					if (parseInt(simulator_data_telefone_controle) < 1) {
+						soma_produtos = soma_produtos + 1;
+						simulator_data_telefone.attr('data-controle', 1);
+					}
+
+					soma_produtos_wrap.text(soma_produtos);
+
+					var preco_individual = virgula_precos(tel_preco)[0]+','+virgula_precos(tel_preco)[1];
+
+					telefone.find(".individual").find('span.price').find('span').text(preco_individual);
+					telefone.find(".individual").find('span.price').find('span').attr('data-preco-individual', tel_preco);
+
+					prod_id = tel_valor;
+					
+
+				}else{
+					simulator_data_telefone.text("0");
+					if (parseInt(simulator_data_telefone_controle) > 0) {
+						if(parseInt(soma_produtos) > 0){
+							soma_produtos = soma_produtos - 1;
+						}
+						simulator_data_telefone.attr('data-controle', 0);
+					}
+
+					soma_produtos_wrap.text(soma_produtos);
+
+					telefone.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
 				}
 
-				soma_produtos_wrap.text(soma_produtos);
-
-				var preco_individual = virgula_precos(net_preco)[0]+','+virgula_precos(net_preco)[1];
-
-				internet.find(".individual").find('span.price').find('span').text(preco_individual);
-				internet.find(".individual").find('span.price').find('span').attr('data-preco-individual', net_preco);
 
 				
 
-			}else{
-				simulator_data_internet.text("0");
-				if (parseInt(simulator_data_internet_controle) > 0) {
-					if(parseInt(soma_produtos) > 0){
-						soma_produtos = soma_produtos - 1;
+				pega_valores_selecao(telefone, internet, tv, celular);
+			});
+
+
+
+			internet_select.change(function(event) {
+				var soma_produtos = parseInt(soma_produtos_wrap.text());
+				var valor_opt = $(this).val();
+				var simulator_data_internet_controle = parseInt(simulator_data_internet.attr('data-controle'));
+
+				if (valor_opt != "") {
+
+					var net_val = valor_opt.split("-");
+					var net_valor = net_val[0];
+					var net_preco = net_val[1];
+					var net_preco_combo = net_val[2];
+
+
+					simulator_data_internet.text(net_valor);
+					if (parseInt(simulator_data_internet_controle) < 1) {
+						soma_produtos = soma_produtos + 1;
+						simulator_data_internet.attr('data-controle', 1);
 					}
-					simulator_data_internet.attr('data-controle', 0);
 
-					internet.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
+					soma_produtos_wrap.text(soma_produtos);
 
-				}
+					var preco_individual = virgula_precos(net_preco)[0]+','+virgula_precos(net_preco)[1];
 
-				soma_produtos_wrap.text(soma_produtos);
-			}
+					internet.find(".individual").find('span.price').find('span').text(preco_individual);
+					internet.find(".individual").find('span.price').find('span').attr('data-preco-individual', net_preco);
 
-			pega_valores_selecao(telefone, internet, tv, celular);
-		});
+					
 
+				}else{
+					simulator_data_internet.text("0");
+					if (parseInt(simulator_data_internet_controle) > 0) {
+						if(parseInt(soma_produtos) > 0){
+							soma_produtos = soma_produtos - 1;
+						}
+						simulator_data_internet.attr('data-controle', 0);
 
+						internet.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
 
-		tv_select.change(function(event) {
-			var soma_produtos = parseInt(soma_produtos_wrap.text());
-			var valor_opt = $(this).val();
-			var simulator_data_tv_controle = parseInt(simulator_data_tv.attr('data-controle'));
-
-			if (valor_opt != "") {
-
-				var tv_val = valor_opt.split("-");
-				var tv_valor = tv_val[0];
-				var tv_preco = tv_val[1];
-				var tv_preco_combo = tv_val[2];
-
-
-				simulator_data_tv.text(tv_valor);
-				if (parseInt(simulator_data_tv_controle) < 1) {
-					soma_produtos = soma_produtos + 1;
-					simulator_data_tv.attr('data-controle', 1);
-				}
-
-				soma_produtos_wrap.text(soma_produtos);
-
-				var preco_individual = virgula_precos(tv_preco)[0]+','+virgula_precos(tv_preco)[1];
-
-				tv.find(".individual").find('span.price').find('span').text(preco_individual);
-				tv.find(".individual").find('span.price').find('span').attr('data-preco-individual', tv_preco);
-			
-
-			}else{
-				simulator_data_tv.text("0");
-				if (parseInt(simulator_data_tv_controle) > 0) {
-					if(parseInt(soma_produtos) > 0){
-						soma_produtos = soma_produtos - 1;
 					}
-					simulator_data_tv.attr('data-controle', 0);
 
-					tv.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
+					soma_produtos_wrap.text(soma_produtos);
 				}
 
-				soma_produtos_wrap.text(soma_produtos);
+				pega_valores_selecao(telefone, internet, tv, celular);
+			});
+
+
+
+			tv_select.change(function(event) {
+				var soma_produtos = parseInt(soma_produtos_wrap.text());
+				var valor_opt = $(this).val();
+				var simulator_data_tv_controle = parseInt(simulator_data_tv.attr('data-controle'));
+
+				if (valor_opt != "") {
+
+					var tv_val = valor_opt.split("-");
+					var tv_valor = tv_val[0];
+					var tv_preco = tv_val[1];
+					var tv_preco_combo = tv_val[2];
+
+
+					simulator_data_tv.text(tv_valor);
+					if (parseInt(simulator_data_tv_controle) < 1) {
+						soma_produtos = soma_produtos + 1;
+						simulator_data_tv.attr('data-controle', 1);
+					}
+
+					soma_produtos_wrap.text(soma_produtos);
+
+					var preco_individual = virgula_precos(tv_preco)[0]+','+virgula_precos(tv_preco)[1];
+
+					tv.find(".individual").find('span.price').find('span').text(preco_individual);
+					tv.find(".individual").find('span.price').find('span').attr('data-preco-individual', tv_preco);
+				
+
+				}else{
+					simulator_data_tv.text("0");
+					if (parseInt(simulator_data_tv_controle) > 0) {
+						if(parseInt(soma_produtos) > 0){
+							soma_produtos = soma_produtos - 1;
+						}
+						simulator_data_tv.attr('data-controle', 0);
+
+						tv.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
+					}
+
+					soma_produtos_wrap.text(soma_produtos);
+				}
+
+				pega_valores_selecao(telefone, internet, tv, celular);
+			});
+
+
+			celular_select.change(function(event) {
+				// var soma_produtos = parseInt(soma_produtos_wrap.text());
+				var valor_opt = $(this).val();
+				var simulator_data_celular_controle = parseInt(simulator_data_celular.attr('data-controle'));
+
+				if (valor_opt != "") {
+
+					var celular_val = valor_opt.split("-");
+					var celular_valor = celular_val[0];
+					var celular_preco = celular_val[1];
+					var celular_preco_combo = celular_val[2];
+
+
+					simulator_data_celular.text(celular_valor);
+					if (parseInt(simulator_data_celular_controle) < 1) {
+						// soma_produtos = soma_produtos + 1;
+						simulator_data_celular.attr('data-controle', 1);
+					}
+
+					// soma_produtos_wrap.text(soma_produtos);
+
+					var preco_individual = virgula_precos(celular_preco)[0]+','+virgula_precos(celular_preco)[1];
+
+					celular.find(".individual").find('span.price').find('span').text(preco_individual);
+					celular.find(".individual").find('span.price').find('span').attr('data-preco-individual', celular_preco);
+
+				
+
+				}else{
+					simulator_data_celular.text("0");
+					if (parseInt(simulator_data_celular_controle) > 0) {
+						// if(parseInt(soma_produtos) > 0){
+						// 	soma_produtos = soma_produtos - 1;
+						// }
+						simulator_data_celular.attr('data-controle', 0);
+
+						celular.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
+					}
+
+					// soma_produtos_wrap.text(soma_produtos);
+				}
+
+				pega_valores_selecao(telefone, internet, tv, celular);
+			});
+		}
+	}
+
+
+	function card_product_combo(link){
+		var parent_cards = jQuery("[data-component-name='card-product-combo']");
+
+		if(parent_cards.length > 0){
+
+			// active branding
+
+			var product_Combo = parent_cards.find(".ProductCombo");
+			var card = product_Combo.find(".card").first(); // pego o primeiro card
+			// faço o que preciso no card
+			var card_list = card.find(".card-content-list");
+			var card_list_li = card_list.find("li").first();
+			card_list.empty();
+			// guardo o card modificado
+			var card = product_Combo.find(".card").first();
+			product_Combo.empty(); // apago o card que ficou
+
+			console.log(card);
+
+			var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
+			var data_parsed = JSON.parse(escale_valores_api_produtos);
+
+			if( data_parsed.hasOwnProperty('combinacoes') ){
+				console.log("A");
+				var list = "";
+				var url_params = '';
+				var c = 0;
+				var i = 0;
+
+
+				if (data_parsed.combinacoes.length > 0) {
+					console.log("B");
+					var combinacoes = data_parsed.combinacoes;
+
+					for (var u = 0; u < combinacoes.length; u++) {
+						var comb = combinacoes[u];
+
+						 product_Combo.append('<div class="flex-col-3 card"></div>');
+						 product_Combo.find(".card").eq( c ).html(card.html());
+
+						 if(comb.destaque === "true"){
+						 	product_Combo.find(".card").eq( c ).addClass('active branding');
+						 }
+
+
+						 product_Combo.find(".card").eq( c ).find(".card-content-channels").css('display', 'none');
+						 product_Combo.find(".card").eq( c ).find(".card-title").text(comb.nome_combinacao);
+
+
+						 // internet
+						 if( comb.hasOwnProperty('internet') ){
+						 	console.log(i);
+						 	list += '<li class="card-content-list-item"><span class="card-content-list-item-text">'+comb.internet.nome+' de internet</span></li>';
+						 	url_params += '&internetId='+comb.internet.internetId;
+						 	i = i + 1;
+						 }
+
+						 // fone
+						 if( comb.hasOwnProperty('fone') ){
+						 	console.log(i);
+						 	list += '<li class="card-content-list-item"><span class="card-content-list-item-text">Telefone '+comb.fone.nome+'</span></li>';
+						 	url_params += '&foneId='+comb.fone.foneId;
+						 	i = i + 1;
+						 }
+
+
+						 // celular
+						 if( comb.hasOwnProperty('celular') ){
+						 	console.log(i);
+						 	list += '<li class="card-content-list-item"><span class="card-content-list-item-text">Móvel '+comb.celular.nome+'</span></li>';
+						 	url_params += '&celularId='+comb.celular.celularId;
+						 	i = i + 1;
+						 }
+
+						 // tv
+						 if( comb.hasOwnProperty('tv') ){
+						 	console.log(i);					 	
+						 	list += '<li class="card-content-list-item"><span class="card-content-list-item-text">'+comb.tv.nome+'<small style="display:block">(mais de '+comb.tv.qtd_canais+' canais)</small></span></li>';
+
+						 	if( comb.tv.hasOwnProperty('canais_principais') ){
+						 		var channels = '<div class="image-desk-flex">';
+						 		for (var d = 0; d < comb.tv.canais_principais.length; d++) {
+						 			channels += '<img style="width: 50px; margin: 2px 5px;" class="lazy" src="'+comb.tv.canais_principais[d]+'" />';
+						 		}
+						 		channels += '</div>';
+
+						 		product_Combo.find(".card").eq( c ).find(".card-content-channels").css('display', 'block');
+						 		product_Combo.find(".card").eq( c ).find(".card-content-channels").find(".col-12-sm").empty();
+						 		product_Combo.find(".card").eq( c ).find(".card-content-channels").find(".col-12-sm").append(channels);
+						 	}	
+
+						 	url_params += '&tvId='+comb.tv.tvId;
+						 }
+
+						 product_Combo.find(".card").eq( c ).find(".card-content-list").append(list);
+
+
+						 var preco_combo = virgula_precos(comb.preco_combo)[0]+','+virgula_precos(comb.preco_combo)[1];
+
+						 product_Combo.find(".card").eq( c ).find(".card-footer-pricing span.card-footer-pricing-price").text("R$"+preco_combo);
+
+						 var btn_link = product_Combo.find(".card").eq( c ).find("a.btn");
+						 btn_link.attr('href', link+url_params);
+
+						 c = c + 1;
+					};
+				}
+
 			}
 
-			pega_valores_selecao(telefone, internet, tv, celular);
-		});
-
-
-		celular_select.change(function(event) {
-			// var soma_produtos = parseInt(soma_produtos_wrap.text());
-			var valor_opt = $(this).val();
-			var simulator_data_celular_controle = parseInt(simulator_data_celular.attr('data-controle'));
-
-			if (valor_opt != "") {
-
-				var celular_val = valor_opt.split("-");
-				var celular_valor = celular_val[0];
-				var celular_preco = celular_val[1];
-				var celular_preco_combo = celular_val[2];
-
-
-				simulator_data_celular.text(celular_valor);
-				if (parseInt(simulator_data_celular_controle) < 1) {
-					// soma_produtos = soma_produtos + 1;
-					simulator_data_celular.attr('data-controle', 1);
-				}
-
-				// soma_produtos_wrap.text(soma_produtos);
-
-				var preco_individual = virgula_precos(celular_preco)[0]+','+virgula_precos(celular_preco)[1];
-
-				celular.find(".individual").find('span.price').find('span').text(preco_individual);
-				celular.find(".individual").find('span.price').find('span').attr('data-preco-individual', celular_preco);
-
-			
-
-			}else{
-				simulator_data_celular.text("0");
-				if (parseInt(simulator_data_celular_controle) > 0) {
-					// if(parseInt(soma_produtos) > 0){
-					// 	soma_produtos = soma_produtos - 1;
-					// }
-					simulator_data_celular.attr('data-controle', 0);
-
-					celular.find(".individual").find('span.price').find('span').attr('data-preco-individual', "0000");
-				}
-
-				// soma_produtos_wrap.text(soma_produtos);
-			}
-
-			pega_valores_selecao(telefone, internet, tv, celular);
-		});
+		}
 	}
 
 
@@ -830,9 +932,13 @@ jQuery(function($) {
 	        	sessionStorage.removeItem('cliente_numero');
 	        	sessionStorage.setItem('cliente_numero', numero);
 
-	        	tabela_tv();
-	        	tabela_internet();
-	        	tabela_combos_tv_internet();
+	        	var link = link_ecommerce();
+
+	        	tabela_tv(link);
+	        	tabela_internet(link);
+	        	tabela_combos_tv_internet(link);
+	        	simulador(link);
+	        	card_product_combo(link);
 	     	}, 
 	     	error: function(data){
 	        	console.log(data);
@@ -850,10 +956,25 @@ jQuery(function($) {
 		console.log("A");
 		get_api(20950091, 859);
 	}else{
-		console.log("B");
-		tabela_tv();
-		tabela_internet();
-		tabela_combos_tv_internet();
+		var link = link_ecommerce();
+    	tabela_tv(link);
+    	tabela_internet(link);
+    	tabela_combos_tv_internet(link);
+    	simulador(link);
+    	card_product_combo(link);
 	}
+
+
+	$(".CheckAvailability-form.form_cep_api").submit(function(event) {
+		event.preventDefault();
+		var cep = jQuery(".CheckAvailability-form.form_cep_api").find("input").first().val();
+
+		console.log(cep);
+
+		// get_api(cep.replace(/[^0-9]/g, ''), 859);
+
+		return false;
+	});
+
 
 });
