@@ -4,15 +4,15 @@ add_action('wp_ajax_nopriv_escale_claro_api', 'escale_claro_api');
 
 function escale_claro_api(){
 
-	$zipCode = isset($_POST['cep']) ? $_POST['cep'] : "04565-905";
+	$zipCode = isset($_POST['cep']) ? $_POST['cep'] : "20950-091";
 	$number = isset($_POST['numero']) ? $_POST['numero'] : 1;
 	$company = isset($_POST['company']) ? $_POST['company'] : "net";
 	$offshoot = isset($_POST['offshoot']) ? $_POST['offshoot'] : "residencial";
 
 
-	$tvs_admin = get_option('escale_api_produtos_plugin_options_tv') !== null ? preg_replace('/\s*,\s*/', ',', strtoupper(get_option('escale_api_produtos_plugin_options_tv'))) : false;
-	$internet_admin = get_option('escale_api_produtos_plugin_options_internet') !== null ? preg_replace('/\s*,\s*/', ',', strtoupper(get_option('escale_api_produtos_plugin_options_internet'))) : false;
-	$internet_combo_admin = get_option('escale_api_produtos_plugin_options_combos') !== null ? preg_replace('/\s*,\s*/', ',', strtoupper(get_option('escale_api_produtos_plugin_options_combos'))) : false;
+	$tvs_admin = get_option('escale_api_produtos_plugin_options_tv') !== null ? get_option('escale_api_produtos_plugin_options_tv') : array();
+	$internet_admin = get_option('escale_api_produtos_plugin_options_internet') !== null ? get_option('escale_api_produtos_plugin_options_internet') : array();
+	$internet_combo_admin = get_option('escale_api_produtos_plugin_options_combos') !== null ? get_option('escale_api_produtos_plugin_options_combos') : array();
 
 
 	if (!$internet_combo_admin) {
@@ -61,12 +61,21 @@ function escale_claro_api(){
 	$canais = $json["canais"];
 
 	
-	$array_internet_combos = explode(",", $internet_combo_admin);
+	$array_tvs = $tvs_admin;
+	$array_internets = $internet_admin;
+	$array_internet_combos = $internet_combo_admin;
 
 
 	// TVS
 	foreach ($tvs as $tv) {
 		if ($tv["exibir"] == 1 || $tv["exibir"] == true) {
+
+			$tv["slug"] = sanitize_title($tv["nome"]);
+
+			$tv["tabela"] = false;
+			if ( in_array($tv["slug"], $array_tvs) ) {
+				$tv["tabela"] = true;
+			}
 
 			$tv["preco_por"] = $tv["preco"];
 			$tv["preco_de"] = $tv["preco"];
@@ -96,12 +105,18 @@ function escale_claro_api(){
 			unset($tv["precoDe"]);
 
 			$novo_json["produtos"]["tv"][$tv["ordem"]] = $tv;
+			
 		}
 	}
 
 	ksort($novo_json["produtos"]["tv"]);
 
 	foreach ($novo_json["produtos"]["tv"] as $tvs){
+
+		if($tvs["tabela"]){
+			$produtos_array["produtos"]["tv_tabela"][] = $tvs;
+		}
+
 		$produtos_array["produtos"]["tv"][] = $tvs;
 	}
 
@@ -109,7 +124,14 @@ function escale_claro_api(){
 
 	// INTERNETES
 	foreach ($internets as $internet) {
-		if ( ($internet["exibir"] == 1 || $internet["exibir"] == true) && substr(trim(strtolower($internet["nome"])), -4) == "mega") {
+		if ( ($internet["exibir"] == 1 || $internet["exibir"] == true) && (substr(trim(strtolower($internet["nome"])), -4) == "mega" || substr(trim(strtolower($internet["nome"])), -4) == "giga") ) {
+
+			$internet["slug"] = sanitize_title($internet["nome"]);
+
+			$internet["tabela"] = false;
+			if ( in_array($internet["slug"], $array_internets) ) {
+				$internet["tabela"] = true;
+			}
 
 			$internet["preco_por"] = $internet["preco"];
 			$internet["preco_de"] = $internet["preco"];
@@ -151,6 +173,11 @@ function escale_claro_api(){
 	ksort($novo_json["produtos"]["internet"]);
 
 	foreach ($novo_json["produtos"]["internet"] as $internets){
+
+		if($internets["tabela"]){
+			$produtos_array["produtos"]["internet_tabela"][] = $internets;
+		}
+
 		$produtos_array["produtos"]["internet"][] = $internets;
 	}
 
@@ -164,7 +191,9 @@ function escale_claro_api(){
 
 		foreach ($produtos_array["produtos"]["internet"] as $internet) {
 
-			if (in_array(strtoupper($internet["nome"]), $array_internet_combos)) {
+			$internet["slug"] = sanitize_title($internet["nome"]);
+
+			if ( in_array($internet["slug"], $array_internet_combos) ) {
 
 				$internetid = $internet["id"];
 

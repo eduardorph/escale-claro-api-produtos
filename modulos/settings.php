@@ -15,8 +15,8 @@ function escale_api_produtos_options() {
     add_settings_section( 'escale_api_produtos_section', 'Produtos Disponíveis', 'escale_api_produtos_section_api', 'escale_api_produtos' );
     // add_settings_section( 'escale_api_produtos_section2', 'Configuração da API', 'escale_api_produtos_section_api2', 'escale_api_produtos' );
 
-    // add_settings_field( 'escale_api_produtos_plugin_options_tvs', 'Tvs', 'escale_api_produtos_tvs', 'escale_api_produtos', 'escale_api_produtos_section' );
-    // add_settings_field( 'escale_api_produtos_plugin_options_internets', 'Internetes', 'escale_api_produtos_internets', 'escale_api_produtos', 'escale_api_produtos_section' );
+    add_settings_field( 'escale_api_produtos_plugin_options_tvs', 'Tvs', 'escale_api_produtos_tvs', 'escale_api_produtos', 'escale_api_produtos_section' );
+    add_settings_field( 'escale_api_produtos_plugin_options_internets', 'Internetes', 'escale_api_produtos_internets', 'escale_api_produtos', 'escale_api_produtos_section' );
     add_settings_field( 'escale_api_produtos_plugin_options_combos', 'Tabela de Combos (Internet)', 'escale_api_produtos_combos', 'escale_api_produtos', 'escale_api_produtos_section' );
 
     // add_settings_field( 'escale_api_produtos_plugin_options_page_endereco', 'URL Phoneline', 'escale_api_produtos_endereco_callback', 'escale_api_produtos', 'escale_api_produtos_section2' );
