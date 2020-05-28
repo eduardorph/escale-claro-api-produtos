@@ -1,0 +1,11 @@
+{
+    "name": "eduardorph/escale-claro-api-produtos",
+    "type": "wordpress-plugin",
+    "authors": [
+        {
+            "name": "Eduardo Freitas",
+            "email": "eduardorph@hotmail.com"
+        }
+    ],
+    "require": {}
+}
