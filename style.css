@@ -1,6 +1,6 @@
 /*MODAIS*/
 
-.escale-api-modal{
+.escale-api-produtos-modal{
 	position: fixed;
 	z-index: 1000001;
 	top: 0;
@@ -19,7 +19,7 @@
 	display: none;
 }
 
-.escale-api-modal-wrapper{
+.escale-api-produtos-modal-wrapper{
 	background: #fff;
 	border: 10px;
 	position: relative;
@@ -30,13 +30,13 @@
 	margin: 0 10px;
 }
 
-.escale-api-modal-header{
+.escale-api-produtos-modal-header{
 	display: flex;
 	justify-content: flex-end;
 	margin-bottom:10px;
 }
 
-.escale-api-modal-fechar{
+.escale-api-produtos-modal-fechar{
 	cursor: pointer;
 	text-decoration: none;
 	background-color: #da291c;
@@ -44,13 +44,13 @@
 	border-radius: 50px;
 }
 
-.escale-api-modal-fechar-texto {
+.escale-api-produtos-modal-fechar-texto {
     color: #fff;
     font-size: 14px;
     line-height: 18px;
 }
 
-.escale-api-modal-box{
+.escale-api-produtos-modal-box{
 
 	display: flex;
 	align-items: center;
@@ -59,14 +59,14 @@
 
 }
 
-.escale-api-modal-box-escolha-titulo {
+.escale-api-produtos-modal-box-escolha-titulo {
     font-size: 23px;
     color: #da291c;
     margin-bottom: 15px;
     text-align: center;
 }
 
-.escale-api-modal-box-block{
+.escale-api-produtos-modal-box-block{
 	width: 95%;
 	display: flex;
 	align-items: center;
@@ -74,7 +74,7 @@
 
 }
 
-.escale-api-modal-box-link {
+.escale-api-produtos-modal-box-link {
     margin: 10px auto 10px;
     background-color: #da291c;
     padding: 20px 30px;
@@ -93,32 +93,32 @@
     background-repeat: no-repeat;
 }
 
-.escale-api-modal-box-link:hover{
+.escale-api-produtos-modal-box-link:hover{
 	background-color: #3f0060;
 }
 
-.escale-api-modal-box-link-text-call{
+.escale-api-produtos-modal-box-link-text-call{
 	font-weight: normal;
 	font-size: 15px;
 	display:block;
 }
 
-#escale-api-modal-box-telefone a {
+#escale-api-produtos-modal-box-telefone a {
     background-image: url("images/phone.svg");
 }
 
-#escale-api-modal-box-me-ligue a{
+#escale-api-produtos-modal-box-me-ligue a{
 	background-image: url("images/phone_cb.svg");
 }
 
-#escale-api-modal-box-sac a{
+#escale-api-produtos-modal-box-sac a{
 	background-image: url("images/headset.svg");
 }
 
 
 @media (max-width: 410px) 
 {
-	.escale-api-modal-box-link{
+	.escale-api-produtos-modal-box-link{
 		background-size: 35px;
 		background-position: 15px;
 		font-size: 20px;
@@ -128,11 +128,11 @@
 
 /*FORM*/
 
-.escale-api-form{
+.escale-api-produtos-form{
 	width: 95%;
 }
 
-.escale-api-form-div .escale-api-form-input{
+.escale-api-produtos-form-div .escale-api-produtos-form-input{
 	width: 100%;
 	border-radius: 10px;
 	background-color: #fff;
@@ -143,7 +143,7 @@
 }
 
 
-.escale-api-form-div .escale-api-form-btn{
+.escale-api-produtos-form-div .escale-api-produtos-form-btn{
 	width: 100%;
     background-color: #da291c;
     border-radius: 10px;
@@ -155,11 +155,10 @@
     color: #fff;
 }
 
-.escale-api-form-div .escale-api-form-btn:hover{
+.escale-api-produtos-form-div .escale-api-produtos-form-btn:hover{
 	background-color:  #b11b10;
 	color: #fff;
 }
-
 
 .image-desk-flex {
     display: flex;

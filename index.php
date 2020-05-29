@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) or die();
 /*
 * Plugin name: Escale API Produtos
 * Description: Plugin para montar as ofertas da API Claro
-* Version: 3.0
+* Version: 3.1
 * Author: Eduardo - Proteína Digital
 */
 
@@ -27,6 +27,7 @@ require dirname(__FILE__).'/modulos/meta_box.php';
 require dirname(__FILE__).'/modulos/functions.php';
 require dirname(__FILE__).'/modulos/settings.php';
 require dirname(__FILE__).'/claro-api/Claro.php';
+require dirname(__FILE__).'/modulos/front.php';
 
 // ESTILOS
 function load_jquery() {
@@ -36,13 +37,13 @@ function load_jquery() {
         wp_enqueue_script( 'jquery' );
     }
 
-    wp_register_style( 'escale_api_produtos', plugins_url('/style.css', __FILE__), false, '1.0.0', 'all');
+    wp_register_style( 'escale_api_produtos', plugins_url('/style.css', __FILE__), false, '1.0.1', 'all');
     wp_enqueue_style( 'escale_api_produtos' );
 
-    wp_register_script( 'escale_api_produtos_mask', plugins_url('/lib/mask/jquery.mask.min.js',__FILE__ ), false, '1.0.0', 'all');
+    wp_register_script( 'escale_api_produtos_mask', plugins_url('/lib/mask/jquery.mask.min.js',__FILE__ ), false, '1.0.1', 'all');
     wp_enqueue_script('escale_api_produtos_mask');
 
-    wp_register_script( 'escale_api_produtos', plugins_url('/escale_api_produtos.js',__FILE__ ), false, '1.0.1', 'all');
+    wp_register_script( 'escale_api_produtos', plugins_url('/escale_api_produtos.js',__FILE__ ), false, '1.0.2', 'all');
     wp_enqueue_script('escale_api_produtos');
 
     wp_localize_script('escale_api_produtos', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php'), 'outro_valor' => 1234));

@@ -2,20 +2,34 @@ jQuery(function($) {
 
 	var $ = jQuery;
 
-	console.log("v12");
+	console.log("v39");
 
 	// Adiciona uma classe extra no form do CEP
 	jQuery(".CheckAvailability-form").addClass('form_cep_api').removeAttr('data-check-availability-form');
-
 
 	function link_ecommerce(){
 		var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
 		var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
 
-		var cep = sessionStorage.getItem('cliente_cep');
-		var numero = sessionStorage.getItem('cliente_numero');
+		var real_data = '';
 
-		var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
+		if ( sessionStorage.getItem('cliente_cep') !== null ) {
+			var cep = sessionStorage.getItem('cliente_cep') != '' ? "&cep="+sessionStorage.getItem('cliente_cep').replace(/[^0-9]/g, '') : "";
+		}
+
+		if ( sessionStorage.getItem('cliente_numero') !== null ) {
+			var numero = sessionStorage.getItem('cliente_numero') != '' ? "&number="+sessionStorage.getItem('cliente_numero').replace(/[^0-9]/g, '') : "";
+		}
+
+		if ( sessionStorage.getItem('real_data') !== null ) {
+			real_data = '&real_data=true';
+		}else{
+			cep = '';
+			numero = '';
+			real_data = '&real_data=false';
+		}
+
+		var link = "https://planos.claro.com.br/checkout/?affiliateId=jKqRuzgfO&affiliateUserId=Re92UE2&utm_medium=aa&utm_source="+utm_source+"&utm_campaing="+utm_campaign+"&origem=claro"+real_data+cep+numero;
 
 		return link;
 	}
@@ -154,16 +168,16 @@ jQuery(function($) {
 		}else{
 			console.log('falso');
 			tel_combo_div.empty();
-			tel_combo_div.append('<p>Esta combinação ainda não formou um combo.</p>');
+			tel_combo_div.append('<p>Esta combinação ainda não formou um combo!</p>');
 
 			internet_combo_div.empty();
-			internet_combo_div.append('<p>Esta combinação ainda não formou um combo.</p>');
+			internet_combo_div.append('<p>Esta combinação ainda não formou um combo!</p>');
 
 			tv_combo_div.empty();
-			tv_combo_div.append('<p>Esta combinação ainda não formou um combo.</p>');
+			tv_combo_div.append('<p>Esta combinação ainda não formou um combo!</p>');
 
 			cel_combo_div.empty();
-			cel_combo_div.append('<p>Esta combinação ainda não formou um combo.</p>');
+			cel_combo_div.append('<p>Esta combinação ainda não formou um combo!</p>');
 
 			text_total_nocombo.removeClass('hidden');
 			text_total_combo.addClass('hidden');
@@ -203,7 +217,7 @@ jQuery(function($) {
 	}
 
 
-	function tabela_tv(link){
+	function tabela_tv(data_parsed, link){
 
 		var tabela = $(".table-single-component").find(".table.table-bordered.display-desktop");
 		var tabela_mobile = $(".table-single-component").find("div.display-mobile").find('.wrapper');
@@ -211,9 +225,6 @@ jQuery(function($) {
 
 
 		if(tabela.length > 0){
-
-			var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
-			var data_parsed = JSON.parse(escale_valores_api_produtos);
 
 			if( data_parsed.produtos.hasOwnProperty('tv_tabela') ){
 
@@ -345,15 +356,12 @@ jQuery(function($) {
 	}
 
 
-	function tabela_internet(link){
+	function tabela_internet(data_parsed, link){
 
 		var tabela = $(".table-single-internet-component").find(".table.table-bordered.display-desktop");
 		var tabela_mobile = $(".table-single-internet-component").find("div.display-mobile").find('.wrapper');
 
 		if(tabela.length > 0){
-
-			var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
-			var data_parsed = JSON.parse(escale_valores_api_produtos);
 
 			if( data_parsed.produtos.hasOwnProperty('internet_tabela') ){
 		
@@ -459,75 +467,83 @@ jQuery(function($) {
 	}
 
 
-	function tabela_combos_tv_internet(link){
+	function tabela_combos_tv_internet(data_parsed, link){
 
 		var table_multi = $(".table_multi");
 
 		if(table_multi.length > 0){
 
-			var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
-			var data_parsed = JSON.parse(escale_valores_api_produtos);
-
-			if( data_parsed.produtos.hasOwnProperty('tv') ){
+			if( data_parsed.produtos.hasOwnProperty('tv') && data_parsed.produtos.hasOwnProperty('internet') ){
 
 				var tvs = data_parsed.produtos.tv;
 
-				var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
-				var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
-				
+				if(tvs.length > 0){
 
-				var table_multi_side = table_multi.find('.table_multi_side');
-				const table_multi_title = table_multi_side.find(".table_multi_title");
+					var utm_source = _GETURL("utm_source") ? _GETURL("utm_source") : 'EscaleSEOCLAROTV';
+					var utm_campaign = _GETURL("utm_campaign") ? _GETURL("utm_campaign") : 'clique';
+					
 
-				var table_multi_prices_wrapper = table_multi.find('.table_multi_prices').find('.table_multi_prices_wrapper');
-				const table_multi_titles = table_multi_prices_wrapper.find(".table_multi_titles");
-				const table_multi_pricing = table_multi_prices_wrapper.find(".table_multi_pricing").first();
+					var table_multi_side = table_multi.find('.table_multi_side');
+					const table_multi_title = table_multi_side.find(".table_multi_title");
 
-
-				var tv_coluna = '';
-				var internet_titles = '';
-				var table_multi_pricing_vals = '';
-
-				for (var i = 0; i < tvs.length; i++) {
-
-					tv_coluna += '<div class="table_multi_content_plan"><div class="table_multi_content_title" data-table-plan'+i+'="<b>'+tvs[i].nome+'</b> + de '+tvs[i].qtd_canais+' canais"><span class="table_multi_item_value" data-table-item-value=""><b>'+tvs[i].nome+'</b> + de '+tvs[i].qtd_canais+' canais</span></div></div>';
+					var table_multi_prices_wrapper = table_multi.find('.table_multi_prices').find('.table_multi_prices_wrapper');
+					const table_multi_titles = table_multi_prices_wrapper.find(".table_multi_titles");
+					const table_multi_pricing = table_multi_prices_wrapper.find(".table_multi_pricing").first();
 
 
-					table_multi_pricing_vals += '<div class="table_multi_pricing">';
+					var tv_coluna = '';
+					var internet_titles = '';
+					var table_multi_pricing_vals = '';
 
-					for (var d = 0; d < tvs[i].combo.length; d++) {
+					for (var i = 0; i < tvs.length; i++) {
 
-						if(i == 0){
-							internet_titles += '<div class="table_multi_title_item" data-table-plan0="Com <b>'+tvs[i].combo[d].internet_nome+'</b>"><span class="table_multi_item_value" data-table-item-value="">Com <b>'+tvs[i].combo[d].internet_nome+'</b></span></div>';
+						tv_coluna += '<div class="table_multi_content_plan"><div class="table_multi_content_title" data-table-plan'+i+'="<b>'+tvs[i].nome+'</b> + de '+tvs[i].qtd_canais+' canais"><span class="table_multi_item_value" data-table-item-value=""><b>'+tvs[i].nome+'</b> + de '+tvs[i].qtd_canais+' canais</span></div></div>';
+
+
+						table_multi_pricing_vals += '<div class="table_multi_pricing">';
+
+						for (var d = 0; d < tvs[i].combo.length; d++) {
+
+							if(i == 0){
+								internet_titles += '<div class="table_multi_title_item" data-table-plan0="Com <b>'+tvs[i].combo[d].internet_nome+'</b>"><span class="table_multi_item_value" data-table-item-value="">Com <b>'+tvs[i].combo[d].internet_nome+'</b></span></div>';
+							}
+
+							table_multi_pricing_vals += '<a href="'+link+'&tvId='+tvs[i].combo[d].tvId+'&internetId='+tvs[i].combo[d].internetId+'" class="table_multi_content"><div class="table_multi_content_pricing" data-table-plan0="<b>R$'+virgula_precos(tvs[i].combo[d].valor)[0]+','+virgula_precos(tvs[i].combo[d].valor)[1]+'</b>"><span class="table_multi_item_value" data-table-item-value=""><b>R$'+virgula_precos(tvs[i].combo[d].valor)[0]+','+virgula_precos(tvs[i].combo[d].valor)[1]+'</b></span></div></a>';
 						}
 
-						table_multi_pricing_vals += '<a href="'+link+'&tvId='+tvs[i].combo[d].tvId+'&internetId='+tvs[i].combo[d].internetId+'" class="table_multi_content"><div class="table_multi_content_pricing" data-table-plan0="<b>R$'+virgula_precos(tvs[i].combo[d].valor)[0]+','+virgula_precos(tvs[i].combo[d].valor)[1]+'</b>"><span class="table_multi_item_value" data-table-item-value=""><b>R$'+virgula_precos(tvs[i].combo[d].valor)[0]+','+virgula_precos(tvs[i].combo[d].valor)[1]+'</b></span></div></a>';
+						table_multi_pricing_vals += '</div>';
 					}
 
-					table_multi_pricing_vals += '</div>';
+					table_multi_side.empty();
+					table_multi_side.append(table_multi_title);
+					table_multi_side.append(tv_coluna); // APPEND ATRAVÉS DO ARRAY
+
+
+					table_multi_prices_wrapper.empty();
+					table_multi_titles.empty();
+
+					table_multi_prices_wrapper.append(table_multi_titles);
+					table_multi_titles.append(internet_titles);
+					table_multi_prices_wrapper.append(table_multi_pricing_vals);
+
 				}
-
-				table_multi_side.empty();
-				table_multi_side.append(table_multi_title);
-				table_multi_side.append(tv_coluna); // APPEND ATRAVÉS DO ARRAY
-
-
-				table_multi_prices_wrapper.empty();
-				table_multi_titles.empty();
-
-				table_multi_prices_wrapper.append(table_multi_titles);
-				table_multi_titles.append(internet_titles);
-				table_multi_prices_wrapper.append(table_multi_pricing_vals);
 			}
 		}
 	}
 
 
-	function simulador(link){
+	function simulador(data_parsed, link){
 
-		const simulador_componnent = jQuery("[data-component-name='simulator']");
+		var simulador_componnent = jQuery("[data-component-name='simulator']");
 
 		if(simulador_componnent.length > 0){
+			// console.log("Simulador");
+			// console.log(simulador_componnent);
+
+			var telefone = simulador_componnent.find(".cardsList-item:eq( 0 )");
+			var internet = simulador_componnent.find(".cardsList-item:eq( 1 )");
+			var tv = simulador_componnent.find(".cardsList-item:eq( 2 )");
+			var celular = simulador_componnent.find(".cardsList-item:eq( 3 )");
 
 			simulador_componnent.append('<div style="display:none;" id="simulator_data"><ul><li id="simulator_data_telefone"></li><li id="simulator_data_internet"></li><li id="simulator_data_tv"></li><li id="simulator_data_celular"></li></ul></div>');
 
@@ -537,10 +553,7 @@ jQuery(function($) {
 			var simulator_data_celular = jQuery("#simulator_data_celular");
 			var soma_produtos_wrap = jQuery("#soma_produtos_wrap");
 
-			var telefone = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(0);
-			var internet = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(1);
-			var tv = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(2);
-			var celular = simulador_componnent.find("#cardsList").find(".cardsList-item").eq(3);
+			// console.log(telefone);
 
 			var telefone_select = telefone.find("select");
 			var internet_select = internet.find("select");
@@ -570,31 +583,49 @@ jQuery(function($) {
 			tv_select.find("option").not(':first').remove();
 			celular_select.find("option").not(':first').remove();
 
+			// console.log(telefone_select);
 
-			var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
-			var data_parsed = JSON.parse(escale_valores_api_produtos);
 
 			var options_telefone = '';
 			var options_internet = '';
 			var options_tv = '';
 			var options_celular = '';
 
-			for (var i = 0; i < data_parsed.produtos.fone.length; i++) {
-				options_telefone += '<option value="'+data_parsed.produtos.fone[i].id+'-'+data_parsed.produtos.fone[i].preco_por+'-'+data_parsed.produtos.fone[i].preco_combo+'">'+data_parsed.produtos.fone[i].nome+'</option>';
+
+			if( data_parsed.produtos.hasOwnProperty('fone') ){
+				for (var i = 0; i < data_parsed.produtos.fone.length; i++) {
+					options_telefone += '<option value="'+data_parsed.produtos.fone[i].id+'-'+data_parsed.produtos.fone[i].preco_por+'-'+data_parsed.produtos.fone[i].preco_combo+'">'+data_parsed.produtos.fone[i].nome+'</option>';
+				}
+			}else{
+				telefone_select.find('option').first().text('Nenhum pacote disponível');
 			}
 
-			for (var i = 0; i < data_parsed.produtos.internet.length; i++) {
-				options_internet += '<option value="'+data_parsed.produtos.internet[i].id+'-'+data_parsed.produtos.internet[i].preco_por+'-'+data_parsed.produtos.internet[i].preco_combo+'">'+data_parsed.produtos.internet[i].nome+'</option>';
+			if( data_parsed.produtos.hasOwnProperty('internet') ){
+				for (var i = 0; i < data_parsed.produtos.internet.length; i++) {
+					options_internet += '<option value="'+data_parsed.produtos.internet[i].id+'-'+data_parsed.produtos.internet[i].preco_por+'-'+data_parsed.produtos.internet[i].preco_combo+'">'+data_parsed.produtos.internet[i].nome+'</option>';
 
+				}
+			}else{
+				internet_select.find('option').first().text('Nenhum pacote disponível');
 			}
 
-			for (var i = 0; i < data_parsed.produtos.tv.length; i++) {
-				options_tv += '<option value="'+data_parsed.produtos.tv[i].id+'-'+data_parsed.produtos.tv[i].preco_por+'-'+data_parsed.produtos.tv[i].preco_combo+'">'+data_parsed.produtos.tv[i].nome+'</option>';
 
+			if( data_parsed.produtos.hasOwnProperty('tv') ){
+				for (var i = 0; i < data_parsed.produtos.tv.length; i++) {
+					options_tv += '<option value="'+data_parsed.produtos.tv[i].id+'-'+data_parsed.produtos.tv[i].preco_por+'-'+data_parsed.produtos.tv[i].preco_combo+'">'+data_parsed.produtos.tv[i].nome+'</option>';
+
+				}
+			}else{
+				tv_select.find('option').first().text('Nenhum pacote disponível');
 			}
 
-			for (var i = 0; i < data_parsed.produtos.celular.length; i++) {
-				options_celular += '<option value="'+data_parsed.produtos.celular[i].id+'-'+data_parsed.produtos.celular[i].preco_por+'-'+data_parsed.produtos.celular[i].preco_combo+'">'+data_parsed.produtos.celular[i].nome+'</option>';
+
+			if( data_parsed.produtos.hasOwnProperty('celular') ){
+				for (var i = 0; i < data_parsed.produtos.celular.length; i++) {
+					options_celular += '<option value="'+data_parsed.produtos.celular[i].id+'-'+data_parsed.produtos.celular[i].preco_por+'-'+data_parsed.produtos.celular[i].preco_combo+'">'+data_parsed.produtos.celular[i].nome+'</option>';
+				}
+			}else{
+				celular_select.find('option').first().text('Nenhum pacote disponível');
 			}
 
 			telefone_select.append(options_telefone);
@@ -793,11 +824,14 @@ jQuery(function($) {
 
 				pega_valores_selecao(telefone, internet, tv, celular);
 			});
+			
+		}else{
+			console.log("sem simulador componente");
 		}
 	}
 
 
-	function card_product_combo(link){
+	function card_product_combo(data_parsed, link){
 		var parent_cards = jQuery("[data-component-name='card-product-combo']");
 
 		if(parent_cards.length > 0){
@@ -814,10 +848,6 @@ jQuery(function($) {
 			var card = product_Combo.find(".card").first();
 			product_Combo.empty(); // apago o card que ficou
 
-			console.log(card);
-
-			var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
-			var data_parsed = JSON.parse(escale_valores_api_produtos);
 
 			if( data_parsed.hasOwnProperty('combinacoes') ){
 				console.log("A");
@@ -911,7 +941,22 @@ jQuery(function($) {
 	}
 
 
-	function get_api(cep, numero){
+	function call_componnent(){
+		var escale_valores_api_produtos = sessionStorage.getItem('escale_valores_api_produtos');
+		var data_parsed = JSON.parse(escale_valores_api_produtos);
+
+		var link = link_ecommerce();
+
+		tabela_tv(data_parsed, link);
+    	tabela_internet(data_parsed, link);
+    	tabela_combos_tv_internet(data_parsed, link);
+    	simulador(data_parsed, link);
+    	card_product_combo(data_parsed, link);
+	}
+
+
+	function get_api(cep, numero, form, real_data){
+
 		$.ajax({
 	        url: ajax_object.ajax_url,
 	        type:"POST",
@@ -922,6 +967,12 @@ jQuery(function($) {
 	         	numero:numero
 	    	},
 	    	beforeSend: function() {
+	    		sessionStorage.removeItem('real_data');
+
+	    		if (form !== null) {
+	    			var btn = form.find("input[type='submit']");
+					btn.val(btn.attr('data-wait'));
+	    		}
 		    },
 	    	success: function(response){
 	    		// console.log(response);
@@ -932,18 +983,30 @@ jQuery(function($) {
 	        	sessionStorage.removeItem('cliente_numero');
 	        	sessionStorage.setItem('cliente_numero', numero);
 
-	        	var link = link_ecommerce();
-
-	        	tabela_tv(link);
-	        	tabela_internet(link);
-	        	tabela_combos_tv_internet(link);
-	        	simulador(link);
-	        	card_product_combo(link);
+	        	if ( sessionStorage.getItem('escale_valores_api_produtos') != '' ) {
+	        		call_componnent();
+	        	}
 	     	}, 
 	     	error: function(data){
 	        	console.log(data);
+	        	if (form !== null) {
+	    			var btn = form.find("input[type='submit']");
+					btn.val(btn.attr('data-original'));
+	    		}
 	     	},
 	     	complete: function(){
+	     		if (form !== null) {
+	    			var btn = form.find("input[type='submit']");
+					btn.val(btn.attr('data-original'));
+	    		}
+
+	    		if(real_data == true){
+	    			var real = true;
+	    		}else{
+	    			var real = null;
+	    		}
+
+	    		sessionStorage.setItem('real_data', real);
 	     	}
 	    });
 		return false;
@@ -951,30 +1014,73 @@ jQuery(function($) {
 
 
 
-
 	if(sessionStorage.getItem('escale_valores_api_produtos') == null){
 		console.log("A");
-		get_api(20950091, 859);
+		get_api(20950091, 859, null, false);
 	}else{
-		var link = link_ecommerce();
-    	tabela_tv(link);
-    	tabela_internet(link);
-    	tabela_combos_tv_internet(link);
-    	simulador(link);
-    	card_product_combo(link);
+    	if ( sessionStorage.getItem('escale_valores_api_produtos') != '' ) {
+    		call_componnent();
+    	}
 	}
 
 
-	$(".CheckAvailability-form.form_cep_api").submit(function(event) {
+	jQuery(".CheckAvailability-form.form_cep_api").submit(function(event) {
 		event.preventDefault();
-		var cep = jQuery(".CheckAvailability-form.form_cep_api").find("input").first().val();
+		var form = jQuery(this);
+		var cep = form.find("input").first().val();
+		var btn = form.find("input[type='submit']").attr('data-wait', 'Aguarde..');
+		btn.attr('data-original', btn.val());
 
 		console.log(cep);
 
-		// get_api(cep.replace(/[^0-9]/g, ''), 859);
+		if (cep != '') {
+			get_api(cep.replace(/[^0-9]/g, ''), 859, form, true);
+		}
 
 		return false;
 	});
+
+
+
+	// MODAL DE CEP
+	jQuery('form#escale_api_produtos_form').on('submit', function(e){
+	    e.preventDefault();
+	    var formulario = jQuery(this),
+
+	    url = formulario.attr('action'),
+	    type = formulario.attr('method');
+
+	    var cep = jQuery('#escale_api_produtos_form_cep').val();
+	    var numero = jQuery('#escale_api_produtos_form_numero').val();
+	    var link_atual = jQuery('#escale_api_produtos_card_link').val();
+
+	    var submitbtn = jQuery("#escale-api-produtos-form-btn-submit");
+	    var submitbtn_value = jQuery("#escale-api-produtos-form-btn-submit").val();
+
+	    window.location.href = link_atual+"&cep="+cep.replace(/[^0-9]/g, '')+"&number="+numero;
+
+	    console.log("Clicado");
+
+		return false;
+	});
+
+
+	jQuery(document).on('click', '#escale-api-produtos-modal-ctas-fechar', function(event) {
+		console.log("click");
+		jQuery("#escale-api-produtos-modal-ctas").addClass('hide');
+	});
+
+
+	jQuery(document).on('click', 'a[href*="real_data=false"]', function(event) {
+		event.preventDefault();
+		var link = $(this).attr("href");
+
+		$("#escale_api_produtos_card_link").val(link);
+		jQuery("#escale-api-produtos-modal-ctas").removeClass('hide');
+	});
+
+
+	jQuery('#escale_api_produtos_form_cep').mask('00000-000');
 
 
 });

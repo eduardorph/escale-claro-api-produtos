@@ -4,6 +4,7 @@ add_action('wp_ajax_nopriv_escale_claro_api', 'escale_claro_api');
 
 function escale_claro_api(){
 
+	// $zipCode = "53990-000";
 	$zipCode = isset($_POST['cep']) ? $_POST['cep'] : "20950-091";
 	$number = isset($_POST['numero']) ? $_POST['numero'] : 1;
 	$company = isset($_POST['company']) ? $_POST['company'] : "net";
@@ -45,7 +46,8 @@ function escale_claro_api(){
 		'number' => $number,
 		'company' => $company,
 		'offshoot' => $offshoot,
-		'channel' => "desktop"
+		'channel' => "desktop",
+		'info' => "true"
 	);
 
 
@@ -55,6 +57,9 @@ function escale_claro_api(){
 
 	$cidade = $json["data"]["city"];
 	$uf = $json["data"]["uf"];
+
+	$info = $json["info"];
+
 	$produtos = $json["produtos"];
 
 	$novo_json = array();
@@ -116,7 +121,7 @@ function escale_claro_api(){
 			$busca_no_array_tv = busca_no_array($selecoes, $tv["id"], 'tv');
 
 			if( count($busca_no_array_tv) > 0 ){
-				$tv["preco_combo"] = array_values($busca_no_array_tv)[0]["tv"]["preco"];
+				$tv["preco_combo"] = isset(array_values($busca_no_array_tv)[0]["tv"]) ? array_values($busca_no_array_tv)[0]["tv"]["preco"] : $tv["preco_por"];
 			}
 
 			unset($tv["canaisPrincipaisIds"]);
@@ -143,62 +148,63 @@ function escale_claro_api(){
 
 
 	// INTERNETES
-	foreach ($internets as $internet) {
-		if ( ($internet["exibir"] == 1 || $internet["exibir"] == true) && (substr(trim(strtolower($internet["nome"])), -4) == "mega" || substr(trim(strtolower($internet["nome"])), -4) == "giga") ) {
+	if ($info["solr"]["hasNet"] == true){
+		foreach ($internets as $internet) {
+			if ( ($internet["exibir"] == 1 || $internet["exibir"] == true) && (substr(trim(strtolower($internet["nome"])), -4) == "mega" || substr(trim(strtolower($internet["nome"])), -4) == "giga") ) {
 
-			$internet["slug"] = sanitize_title($internet["nome"]);
+				$internet["slug"] = sanitize_title($internet["nome"]);
 
-			$internet["tabela"] = false;
-			if ( in_array($internet["slug"], $array_internets) ) {
-				$internet["tabela"] = true;
-			}
+				$internet["tabela"] = false;
+				if ( in_array($internet["slug"], $array_internets) ) {
+					$internet["tabela"] = true;
+				}
 
-			$internet["preco_por"] = $internet["preco"];
-			$internet["preco_de"] = $internet["preco"];
-			$internet["preco_combo"] = 0;
-			$tv["tem_wifi"] = "Não";
+				$internet["preco_por"] = $internet["preco"];
+				$internet["preco_de"] = $internet["preco"];
+				$internet["preco_combo"] = 0;
+				$tv["tem_wifi"] = "Não";
 
-			if( isset($internet["ofertaId"]) ){
-				$internet["preco_por"] = $ofertas[$internet["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
-			}
+				if( isset($internet["ofertaId"]) ){
+					$internet["preco_por"] = $ofertas[$internet["ofertaId"]]["pfdd"]["periodo"][0]["preco"];
+				}
 
 
-			if (isset($internet["recursosIds"])) {
-				for ($i=0; $i < count($internet["recursosIds"]); $i++) {
-					if ($internet["recursosIds"][$i] == 90 || $internet["recursosIds"][$i] == 513) {
-						$internet["tem_wifi"] = "Sim";
+				if (isset($internet["recursosIds"])) {
+					for ($i=0; $i < count($internet["recursosIds"]); $i++) {
+						if ($internet["recursosIds"][$i] == 90 || $internet["recursosIds"][$i] == 513) {
+							$internet["tem_wifi"] = "Sim";
+						}
 					}
 				}
+
+				$internet["velocidade_download"] = isset($internet["recursos_descritivos"][17]) ? $internet["recursos_descritivos"][17] : "---";
+
+				$internet["velocidade_upload"] = isset($internet["recursos_descritivos"][18]) ? $internet["recursos_descritivos"][18] : "---";
+
+
+				$busca_no_array_internet = busca_no_array($selecoes, $internet["id"], 'internet');
+
+				if( count($busca_no_array_internet) > 0 ){
+					$internet["preco_combo"] = isset(array_values($busca_no_array_internet)[0]["internet"]) ? array_values($busca_no_array_internet)[0]["internet"]["preco"] : $internet["preco_por"];
+				}
+
+				unset($internet["preco"]);
+				unset($internet["precoDe"]);
+
+				$novo_json["produtos"]["internet"][preg_replace('/\D/', '', $internet["nome"])] = $internet;
 			}
-
-			$internet["velocidade_download"] = isset($internet["recursos_descritivos"][17]) ? $internet["recursos_descritivos"][17] : "---";
-
-			$internet["velocidade_upload"] = isset($internet["recursos_descritivos"][18]) ? $internet["recursos_descritivos"][18] : "---";
-
-
-			$busca_no_array_internet = busca_no_array($selecoes, $internet["id"], 'internet');
-
-			if( count($busca_no_array_internet) > 0 ){
-				$internet["preco_combo"] = array_values($busca_no_array_internet)[0]["internet"]["preco"];
-			}
-
-			unset($internet["preco"]);
-			unset($internet["precoDe"]);
-
-			$novo_json["produtos"]["internet"][preg_replace('/\D/', '', $internet["nome"])] = $internet;
-		}
-	}
-
-
-	ksort($novo_json["produtos"]["internet"]);
-
-	foreach ($novo_json["produtos"]["internet"] as $internets){
-
-		if($internets["tabela"]){
-			$produtos_array["produtos"]["internet_tabela"][] = $internets;
 		}
 
-		$produtos_array["produtos"]["internet"][] = $internets;
+		ksort($novo_json["produtos"]["internet"]);
+
+		foreach ($novo_json["produtos"]["internet"] as $internets){
+
+			if($internets["tabela"]){
+				$produtos_array["produtos"]["internet_tabela"][] = $internets;
+			}
+
+			$produtos_array["produtos"]["internet"][] = $internets;
+		}
 	}
 
 
@@ -209,31 +215,35 @@ function escale_claro_api(){
 		$c = 0;
 
 
-		foreach ($produtos_array["produtos"]["internet"] as $internet) {
+		if(isset($produtos_array["produtos"]["internet"])){
 
-			$internet["slug"] = sanitize_title($internet["nome"]);
 
-			if ( in_array($internet["slug"], $array_internet_combos) ) {
+			foreach ($produtos_array["produtos"]["internet"] as $internet) {
 
-				$internetid = $internet["id"];
+				$internet["slug"] = sanitize_title($internet["nome"]);
 
-				$id_selecao = $tvid."_".$internetid."_0";
+				if ( in_array($internet["slug"], $array_internet_combos) ) {
 
-				$busca_no_array = busca_no_array($selecoes, $id_selecao, false);
+					$internetid = $internet["id"];
 
-				if( count($busca_no_array) > 0 ){
-					$preco_tv = isset($selecoes[$id_selecao]["tv"]["ofertaId"]) ? $ofertas[$selecoes[$id_selecao]["tv"]["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $selecoes[$id_selecao]["tv"]["preco"];
-					$preco_internet = isset($selecoes[$id_selecao]["internet"]["ofertaId"]) ? $ofertas[$selecoes[$id_selecao]["internet"]["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $selecoes[$id_selecao]["internet"]["preco"];
+					$id_selecao = $tvid."_".$internetid."_0";
 
-					$produtos_array["produtos"]["tv"][$key]["combo"][$c]["internetId"] = $internetid;
-					$produtos_array["produtos"]["tv"][$key]["combo"][$c]["internet_nome"] = $internet["nome"];
-					$produtos_array["produtos"]["tv"][$key]["combo"][$c]["tv_nome"] = $tv["nome"];
-					$produtos_array["produtos"]["tv"][$key]["combo"][$c]["tvId"] = $tvid;
-					$produtos_array["produtos"]["tv"][$key]["combo"][$c]["valor"] = $preco_tv + $preco_internet;
+					$busca_no_array = busca_no_array($selecoes, $id_selecao, false);
 
-					$c++;
+					if( count($busca_no_array) > 0 ){
+						$preco_tv = isset($selecoes[$id_selecao]["tv"]["ofertaId"]) ? $ofertas[$selecoes[$id_selecao]["tv"]["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $selecoes[$id_selecao]["tv"]["preco"];
+						$preco_internet = isset($selecoes[$id_selecao]["internet"]["ofertaId"]) ? $ofertas[$selecoes[$id_selecao]["internet"]["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $selecoes[$id_selecao]["internet"]["preco"];
+
+						$produtos_array["produtos"]["tv"][$key]["combo"][$c]["internetId"] = $internetid;
+						$produtos_array["produtos"]["tv"][$key]["combo"][$c]["internet_nome"] = $internet["nome"];
+						$produtos_array["produtos"]["tv"][$key]["combo"][$c]["tv_nome"] = $tv["nome"];
+						$produtos_array["produtos"]["tv"][$key]["combo"][$c]["tvId"] = $tvid;
+						$produtos_array["produtos"]["tv"][$key]["combo"][$c]["valor"] = $preco_tv + $preco_internet;
+
+						$c++;
+					}
+					
 				}
-				
 			}
 		}
 	}
@@ -257,7 +267,7 @@ function escale_claro_api(){
 			$busca_no_array_fone = busca_no_array($selecoes, $fone["id"], "tel");
 
 			if( count($busca_no_array_fone) > 0 ){
-				$fone["preco_combo"] = array_values($busca_no_array_fone)[0]["fone"]["preco"];
+				$fone["preco_combo"] = isset(array_values($busca_no_array_fone)[0]["fone"]) ? array_values($busca_no_array_fone)[0]["fone"]["preco"] : $fone["preco_por"];
 			}
 
 			unset($fone["preco"]);
@@ -267,11 +277,12 @@ function escale_claro_api(){
 		}
 	}
 
+	if(isset($novo_json["produtos"]["fone"])){
+		ksort($novo_json["produtos"]["fone"]);
 
-	ksort($novo_json["produtos"]["fone"]);
-
-	foreach ($novo_json["produtos"]["fone"] as $fones){
-		$produtos_array["produtos"]["fone"][] = $fones;
+		foreach ($novo_json["produtos"]["fone"] as $fones){
+			$produtos_array["produtos"]["fone"][] = $fones;
+		}
 	}
 
 
@@ -291,7 +302,7 @@ function escale_claro_api(){
 			$busca_no_array_celular = busca_no_array($selecoes, $celular["id"], "cel");
 
 			if( count($busca_no_array_celular) > 0 ){
-				$celular["preco_combo"] = array_values($busca_no_array_celular)[0]["celular"]["preco"];
+				$celular["preco_combo"] = isset(array_values($busca_no_array_celular)[0]["celular"]) ? array_values($busca_no_array_celular)[0]["celular"]["preco"] : $celular["preco_por"];
 			}
 
 			unset($celular["preco"]);
@@ -427,7 +438,11 @@ function escale_claro_api(){
 
 
 	echo json_encode($produtos_array);
-	// echo json_encode($busca_no_array_tv);
+	// if(isset($info)){
+	// 	echo json_encode("A");
+	// }else{
+	// 	echo json_encode("B");
+	// }
 
 	die();
 }
