@@ -53,8 +53,8 @@ function escale_claro_api(){
 
 	$json = json_decode($resposta, true);
 
-	$cidade = $json["city"];
-	$uf = $json["uf"];
+	$cidade = $json["data"]["city"];
+	$uf = $json["data"]["uf"];
 	$produtos = $json["produtos"];
 
 	$novo_json = array();
@@ -107,11 +107,13 @@ function escale_claro_api(){
 
 			$tv["canais_principais"] = array();
 
-			for ($i=0; $i < count($tv["canaisPrincipaisIds"]); $i++) { 
-				$tv["canais_principais"][] = $canais["lista"][$tv["canaisPrincipaisIds"][$i]]["imagem"];
+			if(isset($tv["canaisPrincipaisIds"])){
+				for ($i=0; $i < count($tv["canaisPrincipaisIds"]); $i++) { 
+					$tv["canais_principais"][] = $canais["lista"][$tv["canaisPrincipaisIds"][$i]]["imagem"];
+				}
 			}
 
-			$busca_no_array_tv = busca_no_array($selecoes, $tv["id"].'_');
+			$busca_no_array_tv = busca_no_array($selecoes, $tv["id"], 'tv');
 
 			if( count($busca_no_array_tv) > 0 ){
 				$tv["preco_combo"] = array_values($busca_no_array_tv)[0]["tv"]["preco"];
@@ -174,7 +176,7 @@ function escale_claro_api(){
 			$internet["velocidade_upload"] = isset($internet["recursos_descritivos"][18]) ? $internet["recursos_descritivos"][18] : "---";
 
 
-			$busca_no_array_internet = busca_no_array($selecoes, '_'.$internet["id"].'_');
+			$busca_no_array_internet = busca_no_array($selecoes, $internet["id"], 'internet');
 
 			if( count($busca_no_array_internet) > 0 ){
 				$internet["preco_combo"] = array_values($busca_no_array_internet)[0]["internet"]["preco"];
@@ -217,7 +219,7 @@ function escale_claro_api(){
 
 				$id_selecao = $tvid."_".$internetid."_0";
 
-				$busca_no_array = busca_no_array($selecoes, $id_selecao);
+				$busca_no_array = busca_no_array($selecoes, $id_selecao, false);
 
 				if( count($busca_no_array) > 0 ){
 					$preco_tv = isset($selecoes[$id_selecao]["tv"]["ofertaId"]) ? $ofertas[$selecoes[$id_selecao]["tv"]["ofertaId"]]["pfdd"]["periodo"][0]["preco"] : $selecoes[$id_selecao]["tv"]["preco"];
@@ -252,7 +254,7 @@ function escale_claro_api(){
 			}
 
 
-			$busca_no_array_fone = busca_no_array($selecoes, '_'.$fone["id"]);
+			$busca_no_array_fone = busca_no_array($selecoes, $fone["id"], "tel");
 
 			if( count($busca_no_array_fone) > 0 ){
 				$fone["preco_combo"] = array_values($busca_no_array_fone)[0]["fone"]["preco"];
@@ -286,7 +288,7 @@ function escale_claro_api(){
 			}
 
 
-			$busca_no_array_celular = busca_no_array($selecoes, '_'.$celular["id"]);
+			$busca_no_array_celular = busca_no_array($selecoes, $celular["id"], "cel");
 
 			if( count($busca_no_array_celular) > 0 ){
 				$celular["preco_combo"] = array_values($busca_no_array_celular)[0]["celular"]["preco"];
@@ -425,16 +427,46 @@ function escale_claro_api(){
 
 
 	echo json_encode($produtos_array);
+	// echo json_encode($busca_no_array_tv);
 
 	die();
 }
 
 
-function busca_no_array($array, $id_produto){
+function busca_no_array($array, $id_produto, $tipo){
 	$filtered = array();
 
+	switch ($tipo) {
+		case 'tv':
+			$k = 0;
+			break;
+		case 'internet':
+			$k = 1;
+			break;
+		case 'tel':
+			$k = 2;
+			break;
+		case 'cel':
+			$k = 3;
+			break;
+		default:
+			$k = false;
+			break;
+	}
+
+	// tv_int_tel_cel
+
 	foreach($array as $key => $val) {
-	    if(false !== strpos($key, $id_produto)) {
+		$chave_array = explode('_', $key);
+
+		if($k !== false){
+			if(!isset($chave_array[$k])){ continue; } // Pula se a chave [3 (cel)] não existir
+			$chave = $chave_array[$k];
+		}else{
+			$chave = $key;
+		}
+
+	    if(false !== strpos($chave, (string)$id_produto)) {
 	        $filtered[$key] = $val;
 	        break;
 	    }
